@@ -56,16 +56,20 @@
         .btnChat {
             height: 100%;
         }*/
+
+        html {
+            height: 99%;
+        }
     </style>
+
 </head>
 <body>
     <div>
         @RenderBody()
+        @Scripts.Render("~/bundles/jquery")
+        @RenderSection("scripts", false)
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-            crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
             integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
             crossorigin="anonymous"></script>
@@ -105,37 +109,37 @@
             }
         }
 
-                             //   function fullscreen() {
-                             //   if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-                             //       (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-                             //       if (document.documentElement.requestFullScreen) {
-                             //           document.documentElement.requestFullScreen();
-                             //       } else if (document.documentElement.mozRequestFullScreen) {
-                             //           document.documentElement.mozRequestFullScreen();
-                             //       } else if (document.documentElement.webkitRequestFullScreen) {
-                             //           document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-                             //       }
-                             //   } else {
-                             //       if (document.cancelFullScreen) {
-                             //           document.cancelFullScreen();
-                             //       } else if (document.mozCancelFullScreen) {
-                             //           document.mozCancelFullScreen();
-                             //       } else if (document.webkitCancelFullScreen) {
-                             //           document.webkitCancelFullScreen();
-                             //       }
-                             //   }
-                             // }
+                                                         //   function fullscreen() {
+                                                         //   if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+                                                         //       (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+                                                         //       if (document.documentElement.requestFullScreen) {
+                                                         //           document.documentElement.requestFullScreen();
+                                                         //       } else if (document.documentElement.mozRequestFullScreen) {
+                                                         //           document.documentElement.mozRequestFullScreen();
+                                                         //       } else if (document.documentElement.webkitRequestFullScreen) {
+                                                         //           document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                                                         //       }
+                                                         //   } else {
+                                                         //       if (document.cancelFullScreen) {
+                                                         //           document.cancelFullScreen();
+                                                         //       } else if (document.mozCancelFullScreen) {
+                                                         //           document.mozCancelFullScreen();
+                                                         //       } else if (document.webkitCancelFullScreen) {
+                                                         //           document.webkitCancelFullScreen();
+                                                         //       }
+                                                         //   }
+                                                         // }
 
-                             //     $(document).on("keydown",function(e){
-                             // 	  if(e.keyCode===122 || e.keyCode===27){
-                             //       var r = confirm("Are you sure exit to exam?");
-                             // if (r == true) {
-                             //   window.close();
-                             // } else {
-                             //   return false;
-                             // }
-                             //     }
-                             //     })
-                             // ----------------------- FULL SCREEN
+                                                         //     $(document).on("keydown",function(e){
+                                                         // 	  if(e.keyCode===122 || e.keyCode===27){
+                                                         //       var r = confirm("Are you sure exit to exam?");
+                                                         // if (r == true) {
+                                                         //   window.close();
+                                                         // } else {
+                                                         //   return false;
+                                                         // }
+                                                         //     }
+                                                         //     })
+                                                         // ----------------------- FULL SCREEN
     </script>
 </body>

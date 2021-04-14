@@ -3,78 +3,78 @@
     ViewBag.Title = "ExamPage";
     Layout = "~/Views/_LayoutPage1.cshtml";
 }
-<body class="bg-light">
+<body class="bg-light" style="height: 100%;">
 
-    <div class="row py-2 my-3 mx-2 border border-dark rounded-2 shadow"
+    <div class="row py-2 mb-auto mt-1 mx-2 border border-dark rounded-2 shadow"
          id="mainScreen"
-         style="opacity: 1; height: 95vh">
+         style="opacity: 1; height: 100%;">
         <div class="row col-5 px-3 border-right border-dark">
-            <div class="col-4">
+            <div class="col-4 h-auto">
                 <h3 class="text-center">Kişiler</h3>
                 <hr />
                 <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
-                     style="overflow-y: scroll; height: 85vh">
-                    <div class="my-1 p-2">
-                        <div class="person my-1 p-2">
-                            Lorem, ipsum.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Quaerat, repudiandae.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Iusto, ipsum.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Autem, culpa.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Aspernatur, eligendi.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Distinctio, placeat.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Ducimus, officia!
-                        </div>
-                        <div class="person my-1 p-2">
-                            Adipisci, fugiat.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Suscipit, libero?
-                        </div>
-                        <div class="person my-1 p-2">
-                            Accusantium, optio.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Harum, eaque!
-                        </div>
-                        <div class="person my-1 p-2">
-                            Ad, nobis?
-                        </div>
-                        <div class="person my-1 p-2">
-                            Cumque, maiores.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Odit, quibusdam?
-                        </div>
-                        <div class="person my-1 p-2">
-                            Fugiat, corrupti!
-                        </div>
-                        <div class="person my-1 p-2">
-                            Ipsam, nemo.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Eos, dolore.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Tempora, fugit.
-                        </div>
-                        <div class="person my-1 p-2">
-                            Suscipit, itaque?
-                        </div>
-                        <div class="person my-1 p-2">
-                            Quasi, nulla?
-                        </div>
+                     style="overflow-y: scroll; height: 90vh">
+                    <div class="m-auto">
+                        @*<div class="person my-1 p-2">
+                                Lorem, ipsum.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Quaerat, repudiandae.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Iusto, ipsum.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Autem, culpa.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Aspernatur, eligendi.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Distinctio, placeat.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Ducimus, officia!
+                            </div>
+                            <div class="person my-1 p-2">
+                                Adipisci, fugiat.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Suscipit, libero?
+                            </div>
+                            <div class="person my-1 p-2">
+                                Accusantium, optio.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Harum, eaque!
+                            </div>
+                            <div class="person my-1 p-2">
+                                Ad, nobis?
+                            </div>
+                            <div class="person my-1 p-2">
+                                Cumque, maiores.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Odit, quibusdam?
+                            </div>
+                            <div class="person my-1 p-2">
+                                Fugiat, corrupti!
+                            </div>
+                            <div class="person my-1 p-2">
+                                Ipsam, nemo.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Eos, dolore.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Tempora, fugit.
+                            </div>
+                            <div class="person my-1 p-2">
+                                Suscipit, itaque?
+                            </div>
+                            <div class="person my-1 p-2">
+                                Quasi, nulla?
+                            </div>*@
                     </div>
                 </div>
                 <!-- kişiler -->
@@ -83,52 +83,17 @@
                 <h3 class="text-center">Chat</h3>
                 <hr />
                 <div class="scrollbar-deep-purple bordered-deep-purple thin"
-                     style="overflow-y: scroll; height: 75vh">
+                     style="overflow-y: scroll; height: 80vh" id="messagesContainer">
                     <div class="container">
-                        <div class="chat-group">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted text-left">Lorem, ipsum.</h6>
-                                    <p class="card-text float-left">
-                                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam aliquid perspiciatis modi veritatis sit odio fugit exercitationem consectetur omnis id?
-                                        <small class="float-end mt-2">00:00</small>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted text-left">Lorem, ipsum.</h6>
-                                    <p class="card-text float-left">
-                                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam aliquid perspiciatis modi veritatis sit odio fugit exercitationem consectetur omnis id?
-                                        <small class="float-end mt-2">00:00</small>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted text-left">Lorem, ipsum.</h6>
-                                    <p class="card-text float-left">
-                                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam aliquid perspiciatis modi veritatis sit odio fugit exercitationem consectetur omnis id?
-                                        <small class="float-end mt-2">00:00</small>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted text-left">Lorem, ipsum.</h6>
-                                    <p class="card-text float-left">
-                                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam aliquid perspiciatis modi veritatis sit odio fugit exercitationem consectetur omnis id?
-                                        <small class="float-end mt-2">00:00</small>
-                                    </p>
-                                </div>
-                            </div>
+                        <div class="chat-group" id="chat-message-group">
                         </div>
                     </div>
                 </div>
-                <div class="input-group mt-2 " style="height:8vh">
-                    <textarea id="input-box" class="form-control h-auto" rows="2"></textarea>
+                <div class="input-group mt-2" style="height:8vh">
+                    <input type="hidden" id="displayname" />
+                    <textarea id="textareaMessage" class="form-control h-auto pb-1" rows="2" style="overflow:hidden; resize:none"></textarea>
                     <span class="input-group-btn">
-                        <button class="btnChat btn btn-secondary ms-2 h-100" type="button"><i class="far fa-paper-plane"></i></button>
+                        <button class="btnChat btn btn-secondary ms-2 h-100" type="button" id="sendMessage"><i class="far fa-paper-plane"></i></button>
                     </span>
                 </div>
                 <!-- chat -->
@@ -142,4 +107,85 @@
             </div>
             <!-- sınav/gözetmen -->
         </div>
+    </div>
+
+    <audio id="notificationAudio">
+        <source src="~/audio/ding-sound-effect.mp3" type="audio/mpeg">
+    </audio>
+
+    @section scripts {
+        <!--Reference the SignalR library. -->
+        <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+        <!--Reference the autogenerated SignalR hub script. -->
+        <script src="~/signalr/hubs"></script>
+        <!--Add script to update the page and send messages.-->
+        <script>
+
+            $("textarea").keydown(function (e) {
+                if (e.keyCode == 13 && !e.shiftKey) {
+                    document.getElementById('sendMessage').click();
+                    e.preventDefault();
+                }
+            });
+
+
+            function notification() {
+                var audio = document.getElementById("notificationAudio");
+                audio.play();
+            }
+
+            $(function () {
+                // Reference the auto-generated proxy for the hub.
+                var chat = $.connection.chatHub;
+                // Create a function that the hub can call back to display messages.
+                chat.client.addNewMessageToPage = function (name, message) {
+
+                    var dt = new Date();
+                    var time = ("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" + ("0" + dt.getSeconds()).slice(-2);
+
+                    // Add the message to the page.
+                    var encodedName = $('<div />').text(name).html();
+                    var encodedMsg = $('<div />').text(message).html();
+
+                    if (encodedMsg.length > 0) {
+
+                        $('#chat-message-group').append(`<div class="card">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted text-left">` + encodedName
+                            + `</h6>
+                                <p class="card-text float-left">` + encodedMsg + `<small class="float-end mt-2">` + time + `</small>
+                                </p>
+                            </div>
+                        </div>`);
+
+                        $('div#messagesContainer').scrollTop($('div#messagesContainer')[0].scrollHeight)
+                        notification();
+                    }
+
+
+                };
+                // Get the user name and store it to prepend to messages.
+                $('#displayname').val(prompt('Enter your name:', ''));
+                // Set initial focus to message input box.
+                $('#textareaMessage').focus();
+                // Start the connection.
+                $.connection.hub.start().done(function () {
+                    $('#sendMessage').click(function () {
+                        // Call the Send method on the hub.
+                        chat.server.send($('#displayname').val(), $('#textareaMessage').val());
+                        // Clear text box and reset focus for next comment.
+                        $('#textareaMessage').val('').focus();
+                        $('div#messagesContainer').scrollTop($('div#messagesContainer')[0].scrollHeight)
+                    });
+                });
+            });
+            // This optional function html-encodes messages for display in the page.
+            function htmlEncode(value) {
+                var encodedValue = $('<div />').text(value).html();
+                return encodedValue;
+            }
+
+        </script>
+    }
+
 </body>

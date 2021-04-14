@@ -3,18 +3,18 @@
     ViewBag.Title = "Teacher";
     Layout = "~/Views/_LayoutPage1.cshtml";
 }
-<body class="bg-light">
+<body class="bg-light" style="height: 100%;">
 
-    <div class="row py-2 my-3 mx-2 border border-dark rounded-2 shadow"
+    <div class="row py-2 mb-auto mt-1 mx-2 border border-dark rounded-2 shadow"
          id="mainScreen"
-         style="opacity: 1; height: 95vh">
+         style="opacity: 1; height: 100%;">
         <div class="row col-5 px-3 border-right border-dark">
-            <div class="col-4">
+            <div class="col-4 h-auto">
                 <h3 class="text-center">Kişiler</h3>
                 <hr />
                 <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
-                     style="overflow-y: scroll; height: 85vh">
-                    <div class="my-1 p-2">
+                     style="overflow-y: scroll; height: 90vh">
+                    <div class="m-auto">
                         <div class="person my-1 p-2">
                             Lorem, ipsum.
                             <small class="blockquote-footer my-auto d-block">1234567890</small>
@@ -103,7 +103,7 @@
                 <h3 class="text-center">Chat</h3>
                 <hr />
                 <div class="scrollbar-deep-purple bordered-deep-purple thin"
-                     style="overflow-y: scroll; height: 75vh">
+                     style="overflow-y: scroll; height: 80vh">
                     <div class="container">
                         <div class="chat-group">
                             <div class="card">
@@ -145,8 +145,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="input-group mt-2 " style="height:8vh">
-                    <textarea id="input-box" class="form-control h-auto" rows="2"></textarea>
+                <div class="input-group mt-2" style="height:8vh">
+                    <textarea id="input-box" class="form-control h-auto pb-1" rows="2"></textarea>
                     <span class="input-group-btn">
                         <button class="btnChat btn btn-secondary ms-2 h-100" type="button"><i class="far fa-paper-plane"></i></button>
                     </span>
@@ -162,5 +162,6 @@
             </div>
             <!-- sınav/gözetmen -->
         </div>
+    </div>
 </body>
 

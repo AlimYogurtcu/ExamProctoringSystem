@@ -23,6 +23,9 @@ namespace ExamProctoring.Controllers
         [HttpPost]
         public ActionResult Verify(Account acc)
         {
+
+            DateTime date = DateTime.Now;
+
             bool isProctor = false;
             cnnct = new SqlConnection(connectionString); 
             string query = "SELECT * FROM account_information WHERE account_username = '"+acc.accountUsername+"' and account_password = '"+acc.accountPassword+"';";
