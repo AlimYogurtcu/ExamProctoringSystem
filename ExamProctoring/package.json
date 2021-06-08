@@ -1,0 +1,14 @@
+{
+  "exclude": [
+    "**/bin",
+    "**/bower_components",
+    "**/jspm_packages",
+    "**/node_modules",
+    "**/obj",
+    "**/platforms"
+  ],
+  "dependencies": {
+    "@tensorflow-models/blazeface": "0.0.7",
+    "@tensorflow/tfjs": "^3.7.0"
+  }
+}

@@ -1,4 +1,8 @@
-﻿$(function () {
+﻿$(window).on("load", function (e) {
+    $("body").removeClass("preload");
+});
+
+$(function () {
     $("#signinModal").modal("show");
 });
 

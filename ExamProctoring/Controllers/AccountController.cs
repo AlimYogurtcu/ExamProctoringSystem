@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -44,7 +45,9 @@ namespace ExamProctoring.Controllers
             AccountContext accountContext = new AccountContext();
             String accountUsernameFromForm = formCollection["account_username"];
             String accountPasswordFromForm = formCollection["account_password"];
-            try{// to check if the account exist or not
+            BackgroundProcess backgroundProcess = new BackgroundProcess();
+            try
+            {// to check if the account exist or not
                 if(Session["username"] == null)// if statement to check if the Session "user" is empty or not
                 {
                     Account account = accountContext.Accounts.Single(acc => acc.account_username.ToString() == accountUsernameFromForm && acc.account_password.ToString() == accountPasswordFromForm);
@@ -57,7 +60,8 @@ namespace ExamProctoring.Controllers
 
                     if (accountRole == "Student")
                     {
-                        return View();
+                        backgroundProcess.setProcesses(BackgroundAppsKill());
+                        return View(backgroundProcess);
                     }
                     if (accountRole == "Teacher")
                     {
@@ -77,6 +81,53 @@ namespace ExamProctoring.Controllers
             }
         }
 
+        [HttpPost]
+        public List<String> BackgroundAppsKill()
+        {
+            List<String> backgroundApps = new List<String>();
+            Process[] processes = Process.GetProcesses();
+            //ProcessThreadCollection currentThreads = Process.GetCurrentProcess().Threads;
+
+            try
+            {
+                foreach (Process p in processes)
+                {
+                    if (!String.IsNullOrEmpty(p.MainWindowTitle) && p.MainWindowTitle != ("ExamProctoring (Running) - Microsoft Visual Studio") && p.MainWindowTitle != ("Login - Google Chrome") && p.MainWindowTitle != ("BackgroundApps - Google Chrome") && !p.MainWindowTitle.Contains("ENGI Project - Discord"))
+                    {
+                        backgroundApps.Add(p.MainWindowTitle.ToString());
+                        //p.Kill();
+                    }
+                    else
+                    {
+                        //doNothing
+                    }
+                }
+                return backgroundApps;
+            }
+            catch
+            {
+                return backgroundApps;
+            }
+        }
+        public List<String> BackgroundApps()
+        {
+            List<String> backgroundApps = new List<String>();
+            Process[] processes = Process.GetProcesses();
+            //ProcessThreadCollection currentThreads = Process.GetCurrentProcess().Threads;
+            foreach (Process p in processes)
+            {
+                if (!String.IsNullOrEmpty(p.MainWindowTitle))
+                {
+                    backgroundApps.Add(p.MainWindowTitle.ToString());
+                }
+
+            }
+            if (backgroundApps == null)
+            {
+                backgroundApps.Add("Non background processes are found!");
+            }
+            return backgroundApps;
+        }
         [HttpPost]
         public String Test() //test to see if the post request of forn works or not
         {

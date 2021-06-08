@@ -28,6 +28,36 @@
     );
 }
 
+function alertFaceDetect(name) {
+    toastr.options = {
+        closeButton: true,
+        debug: false,
+        newestOnTop: true,
+        progressBar: false,
+        positionClass: "toast-top-right",
+        preventDuplicates: false,
+        onclick: null,
+        showDuration: "2000",
+        hideDuration: "1000",
+        timeOut: 0,
+        extendedTimeOut: 0,
+        showEasing: "swing",
+        hideEasing: "linear",
+        showMethod: "fadeIn",
+        hideMethod: "fadeOut",
+    };
+
+    toastr["error"](
+        name +
+        ` now! <br /><br /><a id="` +
+        name +
+        `-alert" class="btn clear" href="#` +
+        name +
+        `-stream"> Go </a >`,
+        "Face Movement Detect"
+    );
+}
+
 function alertSucces(room) {
     toastr.options = {
         closeButton: false,
@@ -35,7 +65,7 @@ function alertSucces(room) {
         newestOnTop: true,
         progressBar: true,
         positionClass: "toast-top-right",
-        preventDuplicates: false,
+        preventDuplicates: true,
         onclick: null,
         showDuration: "1000",
         hideDuration: "1000",

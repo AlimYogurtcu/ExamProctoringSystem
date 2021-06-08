@@ -1,14 +1,14 @@
 ﻿@{ ViewBag.Title = "ExamPage"; Layout = "~/Views/_LayoutPage1.cshtml"; }
-<body id="body-exam" class="bg-light" style="height: 100%">
+<body id="body-exam" class="bg-light preload" style="height: 100%">
     <div class="row py-2 mb-auto mt-1 mx-2 border border-dark rounded-2 shadow"
          id="mainScreen">
         <div class="row col-4 px-3 border-right border-dark">
             <!--<div class="col-4 h-auto">
-                      <h3 class="text-center">Kişiler</h3><br />
-                      <hr />
-                      <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
-                           style="overflow-y: scroll; height: 90vh">
-                      </div>-->
+        <h3 class="text-center">Kişiler</h3><br />
+        <hr />
+        <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
+             style="overflow-y: scroll; height: 90vh">
+        </div>-->
             <!-- kişiler -->
             <!--</div>-->
             <div>
@@ -53,13 +53,30 @@
                               rows="1"
                               style="overflow: hidden; resize: none"
                               placeholder="Room Password" required></textarea>
-                    <button id="btnJoin" class="btn btn-sm" onclick="joinRoom();">
+                    <button id="btnRoom" class="btn btn-sm" onclick="joinRoom();">
                         Join Room
                     </button>
                     <button id="btnLeave" class="btn btn-sm" onclick="leaveRoom();">
                         <i class="far fa-times-circle fa-2x"></i>
                     </button>
+
                 </span>
+                <div id="backgroundApps">
+                    <strong>Following processes are closed:</strong>
+                    <ul>
+                        @try
+                        {
+                            foreach (var name in Model.processes)
+                            {
+                                <li>@name</li>
+                            }
+
+                        }
+                        catch
+                        { //do nothing
+                        }
+                    </ul>
+                </div>
                 <div><small id="roomStatus" class="text-center"></small></div>
             </div>
             <div class="px-3"
@@ -67,8 +84,9 @@
                  style="height: 95vh; margin-top:1vh;">
                 <div id="localCamera"></div>
             </div>
-            </div>
-            <!-- sınav/gözetmen -->
-            
+        </div>
+        <!-- sınav/gözetmen -->
+        <video id="video" style="visibility:hidden; display:none;" autoplay></video>
+        <canvas id="canvas" style="visibility: hidden; display: none;"></canvas>
     </div>
 </body>

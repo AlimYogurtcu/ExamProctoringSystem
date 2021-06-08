@@ -2,7 +2,7 @@
     ViewBag.Title = "Teacher";
     Layout = "~/Views/_LayoutPage1.cshtml";
 }
-<body id="body-proctor" class="bg-light" style="height: 100%;">
+<body id="body-proctor" class="bg-light preload" style="height: 100%;">
 
     <div class="row py-2 mb-auto mt-1 mx-2 border border-dark rounded-2 shadow"
          id="mainScreen">
@@ -97,7 +97,7 @@
                 <span>
                     <textarea id="roomID" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room ID" autofocus required></textarea>
                     <textarea id="roomPassword" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room Password" required></textarea>
-                    <button id="btnJoin" class="btn btn-sm" onclick="openRoom();">Open and Join Room</button>
+                    <button id="btnRoom" class="btn btn-sm" onclick="openRoom();">Open and Join Room</button>
                     <button id="btnClose" class="btn btn-sm" onclick="leaveRoom();"><i class="far fa-times-circle fa-2x"></i></button>
                 </span>
             </div>
