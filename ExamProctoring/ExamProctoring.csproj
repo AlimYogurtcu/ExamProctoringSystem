@@ -251,6 +251,7 @@
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.css" />
     <Content Include="Scripts\toastr.min.js" />
+    <Content Include="video.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

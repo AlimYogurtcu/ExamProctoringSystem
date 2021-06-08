@@ -1,4 +1,4 @@
-﻿﻿
+﻿
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
@@ -8,7 +8,8 @@
           crossorigin="anonymous" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link href="https://cdn.socket.io/4.0.1/socket.io.js" />
-    <link rel="stylesheet" href="~/Scripts/toastr.css"/>
+    <link rel="stylesheet" href="~/Scripts/toastr.css" />
+
     <style>
         html {
             height: 99%;
@@ -18,11 +19,33 @@
             position: relative;
         }
 
-        #btnJoin {
-            border-bottom: 1px solid black;
+        #body-proctor {
+            visibility: hidden;
         }
 
-        #roomTxt {
+        #body-exam {
+            visibility: hidden;
+        }
+
+        #login {
+            visibility: visible;
+        }
+
+        #btnJoin {
+            border-bottom: 1px solid green;
+        }
+
+        #btnOpen {
+            border-bottom: 1px solid green;
+        }
+
+        #btnLeave {
+            border-bottom: 1px solid red;
+            display: none;
+            visibility: hidden;
+        }
+
+        #roomID {
             height: 30px;
         }
 
@@ -33,9 +56,11 @@
 
         #divRoom {
             position: absolute;
-            top: 1%;
-            right: 2%;
-            display: block;
+            padding: 10px;
+            border: 2px solid green;
+            top: 40%;
+            left: 40%;
+            visibility: visible;
         }
 
         #divRoom span {
@@ -44,6 +69,8 @@
 
         #roomStatus {
             position: relative;
+            display: none;
+            visibility: hidden;
         }
 
         #localCamera video {
@@ -52,6 +79,7 @@
             position: absolute;
             height: 200px;
             width: 200px;
+            pointer-events: none;
         }
 
         #proctorScreen {
@@ -75,19 +103,20 @@
             top: 0;
             -o-object-fit: cover;
             object-fit: cover;
-            z-index: -1;
+            z-index: 1;
+            }
+
+        .textareaMessage {
+            overflow: hidden;
+            resize: none;
         }
 
         #streamerName {
             position: absolute;
-            z-index: 1;
+            z-index: 2;
             top: 0;
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
-        }
-
-        video::-webkit-media-controls {
-            display: none;
         }
 
         .scrollbar-deep-purple::-webkit-scrollbar-track {
@@ -141,7 +170,7 @@
             width: 20%;
         }
 
-        .alert a {
+        a {
             text-decoration: none;
             color: black;
         }
@@ -151,6 +180,36 @@
             right: 5px;
             top: 2px;
         }
+
+        #toast-container {
+            visibility: visible;
+        }
+
+        video::-webkit-media-controls-timeline {
+            display: none;
+        }
+        video::-webkit-media-controls-play-button {
+            display: none;
+        }
+        #proctorScreen video::-webkit-media-controls-panel {
+            background-color: transparent;
+        }
+        /*#localCamera video::-webkit-media-controls-panel {
+            display: none;
+        }*/
+        #toggleMute {
+            position: absolute;
+            border: none;
+            background-color: red;
+            width: 30px;
+            height: 30px;
+            border-radius: 100%;
+            color: white;
+            outline: none;
+            cursor: pointer;
+            margin-left: 150px
+        }
+        
 
     </style>
 
@@ -173,7 +232,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
             integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
             crossorigin="anonymous"></script>
-    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+
     <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
     <script src="~/signalr/hubs"></script>
 
@@ -181,82 +240,11 @@
     <script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
     <script src="~/Scripts/toastr.js"></script>
 
+    <script src="https://cdn.webrtc-experiment.com/hark.js"></script>
+
 
 
     <script>
-
-            //Textarea'da Shift+Enter yeni satır oluşturması, sadece Enter'a basılırsa mesaj gönderilsin diye
-            $("textarea").keydown(function (e) {
-                if (e.keyCode == 13 && !e.shiftKey) {
-                    document.getElementById('sendMessage').click();
-                    e.preventDefault();
-                }
-            });
-
-            //Bildirim sesi fonksiyonu
-            function notification() {
-                var audio = document.getElementById("notificationAudio");
-                audio.play();
-            }
-
-            //function foreach(var item in Model)
-            //{
-            //    $('#online-users').append(`< div class="person my-1 p-2">` + item.accountUsername + `</div>`);
-            //}
-
-            $(function () {
-                // Reference the auto-generated proxy for the hub.
-                var chat = $.connection.chatHub;
-                // Create a function that the hub can call back to display messages.
-                chat.client.addNewMessageToPage = function (name, message) {
-
-                    var dt = new Date();
-                    var time = ("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" + ("0" + dt.getSeconds()).slice(-2);
-
-                    // Add the message to the page.
-                    var encodedName = $('<div />').text(name).html();
-                    var encodedMsg = $('<div />').text(message).html();
-
-
-                    //Textarea boşsa gönderim yapmaması için
-                    if (encodedMsg.length > 0) {
-
-                        $('#chat-message-group').append(`<div class="card">
-                                    <div class="card-body">
-                                        <h6 class="card-subtitle mb-2 text-muteViewBag text-left"> ` + encodedName + `
-                            </h6>
-                                        <p class="card-text float-left">` + encodedMsg + `<small class="float-end mt-2">` + time + `</small>
-                                        </p>
-                                    </div>
-                                </div>`);
-
-                        $('div#messagesContainer').scrollTop($('div#messagesContainer')[0].scrollHeight) //Scroll yeni mesaj gelince otomatik aşağı insin diye
-                        notification(); //Yeni mesaj gelince bildirim sesinin çalması için
-                    }
-
-                };
-                /*String loggedUser = sessionStorage["loggedUser"] as String;
-                // Get the user name and store it to prepend to messages.
-                $('#displayname').value = ;
-                // Set initial focus to message input box.
-                $('#textareaMessage').focus();*/
-                // Start the connection.
-                $.connection.hub.start().done(function () {
-                    $('#sendMessage').click(function () {
-                        // Call the Send method on the hub.
-                        chat.server.send(`@ViewBag.Name`, $('#textareaMessage').val());
-                        // Clear text box and reset focus for next comment.
-                        $('#textareaMessage').val('').focus();
-                    });
-                });
-            });
-            // This optional function html-encodes messages for display in the page.
-            function htmlEncode(value) {
-                var encodedValue = $('<div />').text(value).html();
-                return encodedValue;
-            }
-
-
 
     $(function () {
     $("#signinModal").modal("show");
@@ -267,18 +255,9 @@
     keyboard: false,
     });
 
-    //$("#signinModal").on("hidden.bs.modal", function (e) {
-    //    $("#mainScreen").css({ opacity: 1 });
-    //});
-
-    //$("#login").click(function () {
-    //    $("#signinModal").modal("hide");
-    //});
-
     //$(window).bind('beforeunload', function () {
     //    return 'Are you sure you want to leave?';
     //});
-
 
         function alertUnfocus(name, second) {
 
@@ -286,26 +265,77 @@
                 "closeButton": true,
                 "debug": false,
                 "newestOnTop": true,
+                "progressBar": false,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "2000",
+                "hideDuration": "1001",
+                "timeOut": 0,
+                "extendedTimeOut": 0,
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut",
+            }
+
+            toastr["error"](name + ` now unfocus! <br /><br /><a id="` + name + `-alert" class="btn clear" href="#` + name + `-stream"> Go </a >`, "UNFOCUSED")
+        }
+
+        function alertSucces(room) {
+
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-center",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "1000",
+                "hideDuration": "1000",
+                "timeOut": "2000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
+            toastr["success"]("Room Name: " + room, "Room opened.")
+        }
+
+        function alertLeave(name,time) {
+
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": false,
                 "positionClass": "toast-top-right",
                 "preventDuplicates": false,
                 "onclick": null,
+                "showDuration": "0",
+                "hideDuration": "0",
+                "timeOut": "0",
+                "extendedTimeOut": "0",
                 "showEasing": "swing",
                 "hideEasing": "linear",
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut"
             }
 
-            toastr.error(`<a href=#"` + name + `-stream" class="alert-link">` + name + `</a>`, "unfocused!");
+            toastr["warning"]("(" + time + ") " + name + " Leave", "User Leave")
         }
 
-        function alertSuccesOpen(room) {
+        function alertError(title,error) {
 
             toastr.options = {
                 "closeButton": true,
                 "debug": false,
                 "newestOnTop": true,
                 "progressBar": true,
-                "positionClass": "toast-top-center",
+                "positionClass": "toast-bottom-center",
                 "preventDuplicates": false,
                 "onclick": null,
                 "showDuration": "3000",
@@ -318,78 +348,8 @@
                 "hideMethod": "fadeOut"
             }
 
-            toastr["success"]("Room ID: " + room, "Room opened.")
+            toastr["error"](title, error)
         }
-
-        function alertSuccesJoin(room) {
-
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": true,
-                "positionClass": "toast-top-center",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "3000",
-                "hideDuration": "5000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            }
-
-            toastr["success"]("Room ID: " + room, "Room opened.")
-        }
-
-        function alertErrorJoin(room,error) {
-
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": true,
-                "positionClass": "toast-top-center",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "3000",
-                "hideDuration": "5000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            }
-
-            toastr["error"](room + " not available", error)
-        }
-
-        function alertErrorOpen(room,error) {
-
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": true,
-                "positionClass": "toast-top-center",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "3000",
-                "hideDuration": "5000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            }
-
-            toastr["error"](room + " not available", error)
-        }
-
 
         var connection = new RTCMultiConnection();
 
@@ -402,15 +362,15 @@
         // this line is VERY_important
         connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
-        // all below lines are optional; however recommended.
-
         connection.session = {
             audio: true,
-            video: true
+            video: true,
+            data: true
         };
 
         connection.extra = {
-            name: `@ViewBag.name`,
+            name: `@ViewBag.Name`,
+            username: `@ViewBag.Username`,
             unFocus: 0
         };
 
@@ -419,123 +379,473 @@
             OfferToReceiveVideo: true
         };
 
+        connection.onopen = function (event) {
+        setInterval(checkFocus, 1000);
+        function checkFocus() {
+            if (document.hasFocus() == false) {
+                connection.extra.unFocus += 1;
+                connection.updateExtraData();
+            }  //3ten sonra sapıtıyor herkese ayrı interval açıyor !!!!!!!!!!!!!!!!!!!!!
+            /*console.log("extraData: " + connection.extra.unFocus);*/
+        }
+
+        };
+
+        connection.enableLogs = false;
+
         connection.onstream = function (event) {
+
             var streamerName = event.extra.name;
+            var streamerUsername = event.extra.username;
             var video = event.mediaElement;
+            video.volume = 0;
+            video.controls = true;
 
             if (event.type === 'local') {
+
                 document.getElementById("localCamera").appendChild(video);
-                var i = 0;
-                setInterval(checkFocus, 1000);
-                function checkFocus() {
-                    var a = document.hasFocus();
-                    if (a == false) {
-                        i++;
-                        connection.extra.unFocus = i;
-                        connection.updateExtraData();
-                    }
-                    console.log("unFocus: " + i);
-                    console.log("extraData: " + connection.extra.unFocus);
-                }
+
+                connection.extra.unFocus = 0;
+                connection.updateExtraData();
             }
 
             if (event.type === 'remote') {
 
-                var createDiv = document.createElement("div");
-                createDiv.setAttribute("id", streamerName + "-stream");
-                createDiv.setAttribute("class", "remoteContainer");
+                var audioMuted = true;
+                var toggleMute = document.getElementById("toggleMute");
 
-                var createP = document.createElement("p");
-                createP.setAttribute("id", "streamerName");
+
+                toggleMute.onclick = function () {
+
+                    var localStream = connection.streamEvents.selectFirst().stream;
+                    var imgMic = document.getElementById("imgMic");
+
+                    if (audioMuted == false) {
+                        localStream.mute('audio');
+                        audioMuted = true;
+                        imgMic.setAttribute("class", "fas fa-microphone-slash");
+                        toggleMute.style.backgroundColor = "red";
+                    }
+
+                    else {
+                        localStream.unmute();
+                        audioMuted = false;
+                        imgMic.setAttribute("class", "fas fa-microphone");
+                        toggleMute.style.backgroundColor = "green";
+                    }
+
+                };
+
+                initHark({
+                    stream: event.stream,
+                    streamedObject: event,
+                    conn: connection
+                });
+
+                var onlineUsers = document.getElementById("onlineUsers");
+
+                var aOnline = document.createElement("a");
+                aOnline.setAttribute("id", streamerName + "-online")
+                aOnline.setAttribute("href", "#" + streamerName + "-stream");
+
+                var divOnline = document.createElement("div");
+                divOnline.setAttribute("class", "person my-1 p-2");
+
+                var smallOnline = document.createElement("small");
+                smallOnline.setAttribute("class", "blockquote-footer my-auto d-block");
+
+                onlineUsers.appendChild(divOnline);
+                divOnline.appendChild(aOnline);
+
+                aOnline.append(streamerName);
+
+                aOnline.appendChild(smallOnline);
+                smallOnline.append(streamerUsername);
+
+                var divRemote = document.createElement("div");
+                divRemote.setAttribute("id", streamerName + "-stream");
+                divRemote.setAttribute("class", "remoteContainer");
+
+                var pRemote = document.createElement("p");
+                pRemote.setAttribute("id", "streamerName");
 
                 var proctorScreen = document.getElementById("proctorScreen");
-                proctorScreen.appendChild(createDiv);
+                proctorScreen.appendChild(divRemote);
 
-                createDiv.appendChild(createP);
-                createDiv.appendChild(video);
+                divRemote.appendChild(pRemote);
+                divRemote.appendChild(video);
 
-                createP.append(streamerName);
+                pRemote.append(streamerName);
 
                 connection.onExtraDataUpdated = function (event) {
                     var unFocusedName = event.extra.name;
                     var unFocused = event.extra.unFocus;
 
-                    if (unFocused > 1) {
-
-                        var getNameStreamer = document.getElementById(unFocusedName);
+                    if (unFocused > 0) {
+                        var getNameStreamer = document.getElementById(unFocusedName + "-list");
 
                         if (getNameStreamer !== null) {
                             getNameStreamer.innerHTML = unFocusedName + " " + unFocused + " seconds unfocused";
                         }
                         else {
-                            var unFocusedCount = 0;
+                            var unFocusedListCount = 0;
                             var dropdownMenu = document.getElementById("dropdownForUnfocus");
-                            /*var alert = document.getElementById("bottomAlert");*/
 
-                            var createA = document.createElement("a");
-                            createA.setAttribute("class", "dropdown-item");
-                            createA.setAttribute("href", "#" + unFocusedName + "-stream");
-                            createA.setAttribute("id", unFocusedName);
+                            var aDropdown = document.createElement("a");
+                            aDropdown.setAttribute("class", "dropdown-item");
+                            aDropdown.setAttribute("href", "#" + unFocusedName + "-stream");
+                            aDropdown.setAttribute("id", unFocusedName + "-list");
 
-                            dropdownMenu.appendChild(createA);
+                            dropdownMenu.appendChild(aDropdown);
 
-                            var unFocusedCount = document.querySelectorAll("a.dropdown-item").length;
+                            var unFocusedListCount = document.querySelectorAll("a.dropdown-item").length;
 
-                            createA.innerHTML = unFocusedName + " " + unFocused + " seconds unfocused";
-                            document.getElementById("dropdownUnfocus").innerHTML = "Unfocus List " + "(" + unFocusedCount + ")";
+                            aDropdown.innerHTML = unFocusedName + " " + unFocused + " seconds unfocused";
+                            document.getElementById("dropdownUnfocus").innerHTML = "Unfocus List " + "(" + unFocusedListCount + ")";
 
-                            alertUnfocus(unFocusedName,unFocused);
+                            alertUnfocus(unFocusedName, unFocused);
 
                         }
+
                     }
+
+                    var aUnfocus = document.getElementById(streamerName + "-list");
+                    var alertGo = document.getElementById(streamerName + "-alert");
+                    var streamVideo = document.getElementById(streamerName + "-stream");
+
+                    if (aUnfocus != null) {
+
+                        aUnfocus.onclick = function () {
+                            streamVideo.style.border = '2px solid blue';
+                            setTimeout(function () {
+                                streamVideo.style.border = 'unset';
+                            }, 2000);
+
+                        }
+
+
+                    }
+
+                    if (alertGo != null) {
+
+                        alertGo.onclick = function () {
+                            streamVideo.style.border = '2px solid blue';
+                            setTimeout(function () {
+                                streamVideo.style.border = 'unset';
+                            }, 2000);
+                        }
+
+
+                    }
+
+                };
+
+                var aOnline = document.getElementById(streamerName + "-online");
+
+            if (aOnline != null) {
+
+                aOnline.onclick = function () {
+                    event.mediaElement.style.border = '2px solid blue';
+                    setTimeout(function () {
+                        event.mediaElement.style.border = 'unset';
+                    }, 2000);
+                }
+
+
+            }
+
+                connection.onleave = function (event) {
+
+                    var dt = new Date();
+                    var time = ("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" + ("0" + dt.getSeconds()).slice(-2);
+
+
+                    alertLeave(streamerName, time);
                 };
             }
+
+        };
+
+        connection.onmute = function (e) {
+            console.log("ONMUTE");
+
         };
 
 
-
-
-        connection.onstreamended = function (event) {
-            var video = document.getElementById(event.streamid);
-            if (video && video.parentNode) {
-                video.parentNode.remove();
+        //Textarea'da Shift+Enter yeni satır oluşturması, sadece Enter'a basılırsa mesaj gönderilsin diye
+        $("#textareaMessage").keydown(function (e) {
+            if (e.keyCode == 13 && !e.shiftKey) {
+                sendMessage();
+                e.preventDefault();
             }
-        };
+        });
 
+        function sendMessage(e) {
+            if (document.getElementById("textareaMessage").value.length > 0) {
 
-        function OpenOrJoin() {
-            /*this.disabled = true;*/
-            var roomTxt = document.getElementById("roomTxt").value;
-            roomName = roomTxt;
-            console.log(roomName);
-            connection.openOrJoin(roomName, function (isRoomOpened, roomid, error) {
-                if (error) {
-                    alertErrorOpen(roomName, error);
+                var name = connection.extra.name;
+
+                connection.send({
+                    message: document.getElementById("textareaMessage").value,
+                    sender: name
+                });
+
+                appendMsg(event);
+                document.getElementById("textareaMessage").value = '';
+
+                $('div#messagesContainer').scrollTop($('div#messagesContainer')[0].scrollHeight) //Scroll yeni mesaj gelince otomatik aşağı insin diye
+            }
+        }
+
+        function appendMsg(event) {
+
+            var dt = new Date();
+            var time = ("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" + ("0" + dt.getSeconds()).slice(-2);
+
+            try {
+
+                var chatMsgGroup = document.getElementById("chat-message-group");
+                $(chatMsgGroup).append(`<div class="card">
+                   <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-mute text-left"> ` + event.data.sender + `
+            </h6>
+                        <p class="card-text float-left">` + event.data.message + `<small class="float-end mt-2">` + time + `</small>
+                        </p>
+                    </div>
+                </div>`);
+
+                notification(); //Yeni mesaj gelince bildirim sesinin çalması için
+
+            } catch (e) {
+                if (e) {
+
+                    var message = document.getElementById("textareaMessage").value;
+
+                    var chatMsgGroup = document.getElementById("chat-message-group");
+                    $(chatMsgGroup).append(`<div class="card">
+                   <div class="card-body">
+                        <h6 id="` + connection.extra.name + `-chat" class="card-subtitle mb-2 text-mute text-left"> ` + connection.extra.name + `
+            </h6>
+                        <p class="card-text float-left">` + message + `<small class="float-end mt-2">` + time + `</small>
+                        </p>
+                    </div>
+                </div>`);
+
+                }
+            }
+        }
+
+        connection.onmessage = appendMsg;
+
+        //Bildirim sesi fonksiyonu
+        function notification() {
+            var audio = document.getElementById("notificationAudio");
+            audio.play();
+        }
+
+            function initHark(args) {
+                if (!window.hark) {
+                    throw 'Please link hark.js';
+                    return;
                 }
 
-                alertSuccesOpen(roomName);
+                var conn = args.conn;
+                var streamedObject = args.streamedObject;
+                var stream = args.stream;
+
+                var options = {};
+                var speechEvents = hark(stream, options);
+
+                speechEvents.on('speaking', function () {
+                    conn.onspeaking(streamedObject);
+                });
+
+                speechEvents.on('stopped_speaking', function () {
+                    conn.onsilence(streamedObject);
+                });
+
+
+                connection.onspeaking = function (e) {
+                    try {
+                        e.mediaElement.style.border = '1px solid red';
+                    } catch (e) {
+                        if (e) { }
+                    }
+                };
+
+                connection.onsilence = function (e) {
+                    try {
+                        e.mediaElement.style.border = '';
+                    } catch (e) {
+                        if (e) { }
+                    }
+                };
+
+                connection.onvolumechange = function (e) {
+                    e.mediaElement.style.borderWidth = e.volume;
+                };
+
+            }
+
+            connection.onstreamended = function (event) {
+                var video = document.getElementById(event.streamid);
+                var divStreamerName = document.getElementById(event.extra.name + "-online");
+                if (video && video.parentNode) {
+                    video.parentNode.remove();
+                }
+                divStreamerName.parentNode.remove();
+        };
+
+        function closeRoom () {
+            // disconnect with all users
+            connection.getAllParticipants().forEach(function (pid) {
+                connection.disconnectWith(pid);
             });
 
-            if (connection.isOnline === true)
-            document.getElementById("roomStatus").textContent = 'Room ID: ' + roomName;
-        }
+            // stop all local cameras
+            connection.attachStreams.forEach(function (localStream) {
+                localStream.stop();
+            });
 
-        function Join() {
-            /* this.disabled = true; */
-            var roomTxt = document.getElementById("roomTxt").value;
-            roomName = roomTxt;
-            console.log(roomName);
-            connection.join(roomName, function (isRoomJoined, roomid, error) {
-                if (isRoomJoined === false) {
-                    alertErrorJoin(roomName, error);
-                }
-                else {
-                alertSuccesJoin(roomName);
-                }
+            // close socket.io connection
+            connection.closeSocket();
+        };
+
+        function openRoom() {
+
+            var roomName = document.getElementById("roomID").value;
+
+                var password = document.getElementById("roomPassword").value;
+                if (!password || !password.length) {
+                    var error = 'Please enter a valid password.';
+                    var title = password + ` not valid`;
+                    alertError(title, error)
+                        return;
+                    }
+
+                    connection.password = password;
+
+
+            connection.open(roomName, function (isRoomOpened, roomid, error) {
+                    if (error) {
+                        if (error === 'Room not available') {
+                            var title = 'Someone already created this room. Please either join or create a separate room.';
+                            alertError(error, title);
+                            return;
+                        }
+
+                        var title = 'Room not available.';
+                        alertError(title, error);
+                    }
+
+
+                document.getElementById("body-proctor").style.visibility = "visible";
+
+                document.getElementById("btnJoin").style.visibility = "hidden";
+                document.getElementById("roomID").style.visibility = "hidden";
+                document.getElementById("roomPassword").style.visibility = "hidden";
+
+                document.getElementById("btnJoin").style.display = "none";
+                document.getElementById("roomID").style.display = "none";
+                document.getElementById("roomPassword").style.display = "none";
+
+                document.getElementById("btnLeave").style.visibility = "visible";
+                document.getElementById("btnLeave").style.display = "unset";
+
+                document.getElementById("roomStatus").style.visibility = "visible";
+                document.getElementById("roomStatus").style.display = "unset";
+
+                    var divRoom = document.getElementById("divRoom");
+                    divRoom.style.border = "unset";
+                    divRoom.style.margin = "unset";
+                    divRoom.style.padding = "unset";
+                    divRoom.style.top = "unset";
+                    divRoom.style.left = "unset";
+                    divRoom.style.visibility = "unset";
+
+                    divRoom.style.position = "absolute";
+                    divRoom.style.top = "1%";
+                    divRoom.style.right = "2%";
+                    divRoom.style.display = "block";
+
+                    alertSucces(roomName);
+
                 });
-            document.getElementById("roomStatus").textContent = 'Room ID: ' + roomName;
+
+                if (connection.isOnline === true)
+                    document.getElementById("roomStatus").textContent = 'Room Name: ' + roomName;
         }
 
+        function joinRoom() {
+
+            var roomName = document.getElementById("roomID").value;
+
+            var password = document.getElementById("roomPassword").value;
+            if (!password || !password.length) {
+                var error = 'Please enter a valid password.';
+                var title = password + ` not valid`;
+                alertError(title, error)
+                return;
+            }
+
+            connection.password = password;
+
+                connection.join(roomName, function (isJoinedRoom, roomid, error) {
+                    if (error) {
+                        if (error === 'Invalid password') {
+                            var title = password + ` not correct`;
+                            alertError(error, title);
+                            if (!password || !password.length) {
+                                alert(error);
+                                return;
+                            }
+                            connection.password = password;
+                            return;
+                        }
+                        if (error === 'Room not available') {
+                            var title = 'This room does not exist. Please either create it or wait for moderator to enter in the room.';
+                            alertError(error, title)
+                            return;
+                        }
+                        var title = 'Room not available.';
+                        alertError(title, error);
+                    }
+
+
+                    document.getElementById("body-exam").style.visibility = "visible";
+
+                    document.getElementById("btnJoin").style.visibility = "hidden";
+                    document.getElementById("roomID").style.visibility = "hidden";
+                    document.getElementById("roomPassword").style.visibility = "hidden";
+
+                    document.getElementById("btnJoin").style.display = "none";
+                    document.getElementById("roomID").style.display = "none";
+                    document.getElementById("roomPassword").style.display = "none";
+
+                    document.getElementById("roomStatus").style.visibility = "visible";
+                    document.getElementById("roomStatus").style.display = "unset";
+
+                    document.getElementById("btnLeave").style.visibility = "visible";
+                    document.getElementById("btnLeave").style.display = "unset";
+
+                    var divRoom = document.getElementById("divRoom");
+                    divRoom.style.border = "unset";
+                    divRoom.style.margin = "unset";
+                    divRoom.style.padding = "unset";
+                    divRoom.style.top = "unset";
+                    divRoom.style.left = "unset";
+                    divRoom.style.visibility = "unset";
+
+                    divRoom.style.position = "absolute";
+                    divRoom.style.top = "1%";
+                    divRoom.style.right = "2%";
+                    divRoom.style.display = "block";
+
+                    alertSucces(roomName);
+                });
+            if (connection.isOnline === true)
+                document.getElementById("roomStatus").textContent = 'Room Name: ' + roomName;
+            };
 
     //   function fullscreen() {
     //   if ((document.fullScreenElement && document.fullScreenElement !== null) ||
@@ -569,5 +879,6 @@
     //     }
     //     })
     // ----------------------- FULL SCREEN
+
     </script>
 </body>

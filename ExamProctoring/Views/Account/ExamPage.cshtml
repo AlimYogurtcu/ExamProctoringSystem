@@ -3,59 +3,54 @@
     ViewBag.Title = "ExamPage";
     Layout = "~/Views/_LayoutPage1.cshtml";
 }
-<body class="bg-light" style="height: 100%;">
+<body id="body-exam" class="bg-light" style="height: 100%;">
 
-        <div class="row py-2 mb-auto mt-1 mx-2 border border-dark rounded-2 shadow"
-             id="mainScreen"
-             style="height: 100%;">
-            <div class="row col-4 px-3 border-right border-dark">
-                <!--<div class="col-4 h-auto">
-                    <h3 class="text-center">Kişiler</h3><br />
-                    <hr />
-                    <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
-                         style="overflow-y: scroll; height: 90vh">
-                        <div class="m-auto" id="online-users">
-                            logged as @Session["username"] @Session["name"]
-                        </div>
-                    </div>-->
-                <!-- kişiler -->
-                <!--</div>-->
-                <div class="col-8">
-                    <h3 class="text-center">Chat</h3>
-                    <hr />
-                    <div class="scrollbar-deep-purple bordered-deep-purple thin"
-                         style="overflow-y: scroll; height: 80vh" id="messagesContainer">
-                        <div class="container">
-                            <div class="chat-group" id="chat-message-group">
-                                <!-- CHAT -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group mt-2" style="height:8vh">
-                        <input type="hidden" id="displayname" />
-                        <textarea id="textareaMessage" class="form-control h-auto pb-1" rows="2" style="overflow:hidden; resize:none"></textarea>
-                        <span class="input-group-btn">
-                            <button class="btnChat btn btn-secondary ms-2 h-100" type="button" id="sendMessage"><i class="far fa-paper-plane"></i></button>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-8">
-                <h3 class="text-center">Sınav Ekranı</h3>
-                <div id="divRoom">
-                    <span>
-                        <textarea id="roomTxt" cols="20" rows="1" style="overflow:hidden; resize:none"></textarea><button id="btnJoin" class="btn btn-sm" onclick="Join();">Join Room</button>
-                    </span>
-                    <small id="roomStatus" class="text-center"></small>
-                </div>
+    <div class="row py-2 mb-auto mt-1 mx-2 border border-dark rounded-2 shadow"
+         id="mainScreen"
+         style="height: 100%;">
+        <div class="row col-4 px-3 border-right border-dark">
+            <!--<div class="col-4 h-auto">
+                <h3 class="text-center">Kişiler</h3><br />
                 <hr />
-                <div class="px-3 scrollbar-deep-purple bordered-deep-purple thin"
-                     style="overflow-y: scroll; max-height: 85vh">
+                <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
+                     style="overflow-y: scroll; height: 90vh">
+                </div>-->
+            <!-- kişiler -->
+            <!--</div>-->
+            <div class="col-8">
+                <h3 class="text-center">Chat</h3>
+                <hr />
+                <div class="scrollbar-deep-purple bordered-deep-purple thin"
+                     style="overflow-y: scroll; height: 80vh" id="messagesContainer">
+                    <div class="container">
+                        <div class="chat-group" id="chat-message-group">
+                            <!-- CHAT -->
+                        </div>
+                    </div>
                 </div>
-                <!-- sınav/gözetmen -->
-                <div id="localCamera">
-
+                <div id="input-group" class="input-group mt-2" style="height:8vh">
+                    <textarea id="textareaMessage" class="form-control h-auto pb-1" rows="2" style="overflow:hidden; resize:none"></textarea>
+                    <span class="input-group-btn">
+                        <button class="btnChat btn btn-secondary ms-2 h-100" type="button" id="sendMessage" onclick="sendMessage();"><i class="far fa-paper-plane"></i></button>
+                    </span>
                 </div>
             </div>
         </div>
+        <div class="col-8">
+            <h3 class="text-center">Sınav Ekranı</h3>
+            <div id="divRoom">
+                <span>
+                    <textarea id="roomID" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room ID"></textarea><textarea id="roomPassword" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room Password"></textarea><button id="btnJoin" class="btn btn-sm" onclick="joinRoom();">Join Room</button><button id="btnLeave" class="btn btn-sm" onclick="closeRoom();">Leave Room</button>
+                </span>
+                <small id="roomStatus" class="text-center"></small>
+            </div>
+            <hr />
+            <div class="px-3 scrollbar-deep-purple bordered-deep-purple thin" id="examScreen"
+                 style="overflow-y: scroll; max-height: 85vh">
+            </div>
+            <!-- sınav/gözetmen -->
+            <div id="localCamera">
+            </div>
+        </div>
+    </div>
 </body>

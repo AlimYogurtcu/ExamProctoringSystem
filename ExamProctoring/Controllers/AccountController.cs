@@ -51,6 +51,7 @@ namespace ExamProctoring.Controllers
                     Session["username"] = accountUsernameFromForm;
                     Session["name"] = account.account_name.ToString();
                     ViewBag.Name = account.account_name.ToString();
+                    ViewBag.Username = account.account_username.ToString();
                     String accountRole = account.account_role.ToString();
                     
 
