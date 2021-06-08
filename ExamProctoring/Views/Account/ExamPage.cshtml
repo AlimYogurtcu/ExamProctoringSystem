@@ -1,56 +1,74 @@
-﻿
-@{
-    ViewBag.Title = "ExamPage";
-    Layout = "~/Views/_LayoutPage1.cshtml";
-}
-<body id="body-exam" class="bg-light" style="height: 100%;">
-
+﻿@{ ViewBag.Title = "ExamPage"; Layout = "~/Views/_LayoutPage1.cshtml"; }
+<body id="body-exam" class="bg-light" style="height: 100%">
     <div class="row py-2 mb-auto mt-1 mx-2 border border-dark rounded-2 shadow"
-         id="mainScreen"
-         style="height: 100%;">
+         id="mainScreen">
         <div class="row col-4 px-3 border-right border-dark">
             <!--<div class="col-4 h-auto">
-                <h3 class="text-center">Kişiler</h3><br />
-                <hr />
-                <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
-                     style="overflow-y: scroll; height: 90vh">
-                </div>-->
+                      <h3 class="text-center">Kişiler</h3><br />
+                      <hr />
+                      <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
+                           style="overflow-y: scroll; height: 90vh">
+                      </div>-->
             <!-- kişiler -->
             <!--</div>-->
-            <div class="col-8">
+            <div>
                 <h3 class="text-center">Chat</h3>
                 <hr />
                 <div class="scrollbar-deep-purple bordered-deep-purple thin"
-                     style="overflow-y: scroll; height: 80vh" id="messagesContainer">
+                     style="overflow-y: scroll; height: 80vh"
+                     id="messagesContainer">
                     <div class="container">
                         <div class="chat-group" id="chat-message-group">
                             <!-- CHAT -->
                         </div>
                     </div>
                 </div>
-                <div id="input-group" class="input-group mt-2" style="height:8vh">
-                    <textarea id="textareaMessage" class="form-control h-auto pb-1" rows="2" style="overflow:hidden; resize:none"></textarea>
+                <div id="input-group" class="input-group mt-2">
+                    <textarea id="textareaMessage"
+                              class="form-control h-auto pb-1"
+                              rows="2"
+                              style="overflow: hidden; resize: none"></textarea>
                     <span class="input-group-btn">
-                        <button class="btnChat btn btn-secondary ms-2 h-100" type="button" id="sendMessage" onclick="sendMessage();"><i class="far fa-paper-plane"></i></button>
+                        <button class="btnChat btn btn-secondary ms-2 h-100"
+                                type="button"
+                                id="sendMessage"
+                                onclick="sendMessage();">
+                            <i class="far fa-paper-plane"></i>
+                        </button>
                     </span>
                 </div>
             </div>
         </div>
         <div class="col-8">
-            <h3 class="text-center">Sınav Ekranı</h3>
+            <h3 id="mainCol" class="text-center">Sınav Ekranı</h3>
             <div id="divRoom">
                 <span>
-                    <textarea id="roomID" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room ID"></textarea><textarea id="roomPassword" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room Password"></textarea><button id="btnJoin" class="btn btn-sm" onclick="joinRoom();">Join Room</button><button id="btnLeave" class="btn btn-sm" onclick="closeRoom();">Leave Room</button>
+                    <textarea id="roomID"
+                              cols="20"
+                              rows="1"
+                              style="overflow: hidden; resize: none"
+                              placeholder="Room ID" autofocus required></textarea>
+                    <textarea id="roomPassword"
+                              cols="20"
+                              rows="1"
+                              style="overflow: hidden; resize: none"
+                              placeholder="Room Password" required></textarea>
+                    <button id="btnJoin" class="btn btn-sm" onclick="joinRoom();">
+                        Join Room
+                    </button>
+                    <button id="btnLeave" class="btn btn-sm" onclick="leaveRoom();">
+                        <i class="far fa-times-circle fa-2x"></i>
+                    </button>
                 </span>
-                <small id="roomStatus" class="text-center"></small>
+                <div><small id="roomStatus" class="text-center"></small></div>
             </div>
-            <hr />
-            <div class="px-3 scrollbar-deep-purple bordered-deep-purple thin" id="examScreen"
-                 style="overflow-y: scroll; max-height: 85vh">
+            <div class="px-3"
+                 id="examScreen"
+                 style="height: 95vh; margin-top:1vh;">
+                <div id="localCamera"></div>
+            </div>
             </div>
             <!-- sınav/gözetmen -->
-            <div id="localCamera">
-            </div>
-        </div>
+            
     </div>
 </body>

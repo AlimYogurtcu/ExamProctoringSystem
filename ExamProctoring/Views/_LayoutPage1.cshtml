@@ -1,229 +1,28 @@
-﻿
-<head>
+﻿<head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
           rel="stylesheet"
           integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
           crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+          integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+          crossorigin="anonymous" />
     <link href="https://cdn.socket.io/4.0.1/socket.io.js" />
     <link rel="stylesheet" href="~/Scripts/toastr.css" />
-
-    <style>
-        html {
-            height: 99%;
-        }
-
-        body {
-            position: relative;
-        }
-
-        #body-proctor {
-            visibility: hidden;
-        }
-
-        #body-exam {
-            visibility: hidden;
-        }
-
-        #login {
-            visibility: visible;
-        }
-
-        #btnJoin {
-            border-bottom: 1px solid green;
-        }
-
-        #btnOpen {
-            border-bottom: 1px solid green;
-        }
-
-        #btnLeave {
-            border-bottom: 1px solid red;
-            display: none;
-            visibility: hidden;
-        }
-
-        #roomID {
-            height: 30px;
-        }
-
-        .dropdown {
-            height: 30px;
-            position: absolute;
-        }
-
-        #divRoom {
-            position: absolute;
-            padding: 10px;
-            border: 2px solid green;
-            top: 40%;
-            left: 40%;
-            visibility: visible;
-        }
-
-        #divRoom span {
-            display: flex;
-        }
-
-        #roomStatus {
-            position: relative;
-            display: none;
-            visibility: hidden;
-        }
-
-        #localCamera video {
-            bottom: 0px;
-            right: 1%;
-            position: absolute;
-            height: 200px;
-            width: 200px;
-            pointer-events: none;
-        }
-
-        #proctorScreen {
-            position: relative;
-        }
-
-        .remoteContainer {
-            position: relative;
-            float: left;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            height: 250px;
-            width: 250px;
-        }
-
-        #proctorScreen video {
-            height: 100%;
-            width: 100%;
-            background-color: rgb(218, 228, 216);
-            position: relative;
-            top: 0;
-            -o-object-fit: cover;
-            object-fit: cover;
-            z-index: 1;
-            }
-
-        .textareaMessage {
-            overflow: hidden;
-            resize: none;
-        }
-
-        #streamerName {
-            position: absolute;
-            z-index: 2;
-            top: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-        }
-
-        .scrollbar-deep-purple::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
-            background-color: #f5f5f5;
-            border-radius: 10px;
-        }
-
-        .scrollbar-deep-purple::-webkit-scrollbar {
-            width: 12px;
-            background-color: #f5f5f5;
-        }
-
-        .scrollbar-deep-purple::-webkit-scrollbar-thumb {
-            border-radius: 10px;
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
-            background-color: #000000;
-        }
-
-        .scrollbar-deep-purple {
-            scrollbar-color: #000000 #f5f5f5;
-        }
-
-        .bordered-deep-purple::-webkit-scrollbar-track {
-            -webkit-box-shadow: none;
-            border: 1px solid #000000;
-        }
-
-        .bordered-deep-purple::-webkit-scrollbar-thumb {
-            -webkit-box-shadow: none;
-        }
-
-        .thin::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .person:hover {
-            background-color: gainsboro;
-            transition: 0.25s;
-            cursor: default;
-        }
-
-        .alert {
-            display: none;
-        }
-
-        .alert-danger {
-            position: fixed;
-            bottom: 5px;
-            right: 5%;
-            width: 20%;
-        }
-
-        a {
-            text-decoration: none;
-            color: black;
-        }
-
-        .alert .close {
-            position: absolute;
-            right: 5px;
-            top: 2px;
-        }
-
-        #toast-container {
-            visibility: visible;
-        }
-
-        video::-webkit-media-controls-timeline {
-            display: none;
-        }
-        video::-webkit-media-controls-play-button {
-            display: none;
-        }
-        #proctorScreen video::-webkit-media-controls-panel {
-            background-color: transparent;
-        }
-        /*#localCamera video::-webkit-media-controls-panel {
-            display: none;
-        }*/
-        #toggleMute {
-            position: absolute;
-            border: none;
-            background-color: red;
-            width: 30px;
-            height: 30px;
-            border-radius: 100%;
-            color: white;
-            outline: none;
-            cursor: pointer;
-            margin-left: 150px
-        }
-        
-
-    </style>
+    <link rel="stylesheet" href="~/main.css" />
 
 </head>
 <body>
     <div>
-        @RenderBody()
-        @Scripts.Render("~/bundles/jquery")
+        @RenderBody() 
+        @Scripts.Render("~/bundles/jquery") 
         @RenderSection("scripts", false)
     </div>
-
-    @*Bildirim sesi*@
+      @*Bildirim sesi*@
     <audio id="notificationAudio">
-        <source src="~/audio/ding-sound-effect.mp3" type="audio/mpeg">
+        <source src="~/audio/ding-sound-effect.mp3" type="audio/mpeg" />
     </audio>
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
@@ -232,514 +31,556 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
             integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
             crossorigin="anonymous"></script>
-
-    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
-    <script src="~/signalr/hubs"></script>
-
-    <script src="https://rtcmulticonnection.herokuapp.com/dist/RTCMultiConnection.min.js"></script>
+    <script src="https://rtcmulticonnection.herokuapp.com/dist/RTCMultiConnection.js"></script>
     <script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
     <script src="~/Scripts/toastr.js"></script>
-
     <script src="https://cdn.webrtc-experiment.com/hark.js"></script>
-
-
+    <script src="~/main.js"></script>
+    <script src="~/ToastrAlerts.js"></script>
 
     <script>
-
-    $(function () {
-    $("#signinModal").modal("show");
-    });
-
-    $("#signinModal").modal({
-    backdrop: "static",
-    keyboard: false,
-    });
-
-    //$(window).bind('beforeunload', function () {
-    //    return 'Are you sure you want to leave?';
-    //});
-
-        function alertUnfocus(name, second) {
-
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": false,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": true,
-                "onclick": null,
-                "showDuration": "2000",
-                "hideDuration": "1001",
-                "timeOut": 0,
-                "extendedTimeOut": 0,
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut",
-            }
-
-            toastr["error"](name + ` now unfocus! <br /><br /><a id="` + name + `-alert" class="btn clear" href="#` + name + `-stream"> Go </a >`, "UNFOCUSED")
-        }
-
-        function alertSucces(room) {
-
-            toastr.options = {
-                "closeButton": false,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": true,
-                "positionClass": "toast-bottom-center",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "1000",
-                "hideDuration": "1000",
-                "timeOut": "2000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            }
-
-            toastr["success"]("Room Name: " + room, "Room opened.")
-        }
-
-        function alertLeave(name,time) {
-
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": false,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "0",
-                "hideDuration": "0",
-                "timeOut": "0",
-                "extendedTimeOut": "0",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            }
-
-            toastr["warning"]("(" + time + ") " + name + " Leave", "User Leave")
-        }
-
-        function alertError(title,error) {
-
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": true,
-                "positionClass": "toast-bottom-center",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "3000",
-                "hideDuration": "5000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            }
-
-            toastr["error"](title, error)
-        }
-
         var connection = new RTCMultiConnection();
 
-        var roomName;
+// oda sahibi odadan çıkarsa oda kapansın diye
+connection.autoCloseEntireSession = true;
 
+connection.socketURL = "https://rtcmulticonnection.herokuapp.com:443/";
 
-        // set this line to close room as soon as owner leaves
-        connection.autoCloseEntireSession = true;
+connection.session = {
+    audio: true,
+    video: true,
+    broadcast: true,
+    data: true,
+};
+connection.maxParticipantsAllowed = 100; // odada olabilecek maksimum öğrenci sayısı
 
-        // this line is VERY_important
-        connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+//function closeEntering() {
+//  connection.maxParticipantsAllowed =
+//    connection.getAllParticipants().length;
+//  console.log(connection.maxParticipantsAllowed);
+//  alertClosingEnter();
+//} // odaya girebilecek maksimum öğrenci sayısını o an ki sayıya eşitlemek için (girişi kapatmak)
 
-        connection.session = {
-            audio: true,
-            video: true,
-            data: true
-        };
+connection.extra = {
+    name: `@ViewBag.Name`,
+    username: `@ViewBag.Username`,
+    unFocus: 0,
+};
 
-        connection.extra = {
-            name: `@ViewBag.Name`,
-            username: `@ViewBag.Username`,
-            unFocus: 0
-        };
+connection.sdpConstraints.mandatory = {
+    OfferToReceiveAudio: true,
+    OfferToReceiveVideo: true,
+};
 
-        connection.sdpConstraints.mandatory = {
-            OfferToReceiveAudio: true,
-            OfferToReceiveVideo: true
-        };
+connection.enableLogs = false;
+window.ignoreBeforeUnload = true;
 
-        connection.onopen = function (event) {
+//connection.onRoomFull = function (roomid) { // oda full ise yapılacaklar (çalışmıyor)
+//  connection.closeSocket();
+//  connection.attachStreams.forEach(function (stream) {
+//    stream.stop();
+//  });
+
+//  alertEnteringClose();
+//};
+
+// bağlantı sağlandıktan sonra
+connection.onstream = function (event) {
+    var streamerName = event.extra.name;
+    var streamerUsername = event.extra.username;
+    var video = event.mediaElement;
+    video.volume = 0; // tüm streamleri sessiz başlatmak için
+    video.controls = true; // streamlerin altındaki butonları aktif etmek için
+
+    if (event.type === "local") {
+
+        // öğrencinin sayfada olup olmamasını kontrol edebilmek için
         setInterval(checkFocus, 1000);
         function checkFocus() {
             if (document.hasFocus() == false) {
                 connection.extra.unFocus += 1;
                 connection.updateExtraData();
-            }  //3ten sonra sapıtıyor herkese ayrı interval açıyor !!!!!!!!!!!!!!!!!!!!!
-            /*console.log("extraData: " + connection.extra.unFocus);*/
+            }
+            /*console.log(connection.extra.unFocus);*/
         }
 
-        };
-
-        connection.enableLogs = false;
-
-        connection.onstream = function (event) {
-
-            var streamerName = event.extra.name;
-            var streamerUsername = event.extra.username;
-            var video = event.mediaElement;
-            video.volume = 0;
-            video.controls = true;
-
-            if (event.type === 'local') {
-
-                document.getElementById("localCamera").appendChild(video);
-
-                connection.extra.unFocus = 0;
-                connection.updateExtraData();
-            }
-
-            if (event.type === 'remote') {
-
-                var audioMuted = true;
-                var toggleMute = document.getElementById("toggleMute");
-
-
-                toggleMute.onclick = function () {
-
-                    var localStream = connection.streamEvents.selectFirst().stream;
-                    var imgMic = document.getElementById("imgMic");
-
-                    if (audioMuted == false) {
-                        localStream.mute('audio');
-                        audioMuted = true;
-                        imgMic.setAttribute("class", "fas fa-microphone-slash");
-                        toggleMute.style.backgroundColor = "red";
-                    }
-
-                    else {
-                        localStream.unmute();
-                        audioMuted = false;
-                        imgMic.setAttribute("class", "fas fa-microphone");
-                        toggleMute.style.backgroundColor = "green";
-                    }
-
-                };
-
-                initHark({
-                    stream: event.stream,
-                    streamedObject: event,
-                    conn: connection
-                });
-
-                var onlineUsers = document.getElementById("onlineUsers");
-
-                var aOnline = document.createElement("a");
-                aOnline.setAttribute("id", streamerName + "-online")
-                aOnline.setAttribute("href", "#" + streamerName + "-stream");
-
-                var divOnline = document.createElement("div");
-                divOnline.setAttribute("class", "person my-1 p-2");
-
-                var smallOnline = document.createElement("small");
-                smallOnline.setAttribute("class", "blockquote-footer my-auto d-block");
-
-                onlineUsers.appendChild(divOnline);
-                divOnline.appendChild(aOnline);
-
-                aOnline.append(streamerName);
-
-                aOnline.appendChild(smallOnline);
-                smallOnline.append(streamerUsername);
-
-                var divRemote = document.createElement("div");
-                divRemote.setAttribute("id", streamerName + "-stream");
-                divRemote.setAttribute("class", "remoteContainer");
-
-                var pRemote = document.createElement("p");
-                pRemote.setAttribute("id", "streamerName");
-
-                var proctorScreen = document.getElementById("proctorScreen");
-                proctorScreen.appendChild(divRemote);
-
-                divRemote.appendChild(pRemote);
-                divRemote.appendChild(video);
-
-                pRemote.append(streamerName);
-
-                connection.onExtraDataUpdated = function (event) {
-                    var unFocusedName = event.extra.name;
-                    var unFocused = event.extra.unFocus;
-
-                    if (unFocused > 0) {
-                        var getNameStreamer = document.getElementById(unFocusedName + "-list");
-
-                        if (getNameStreamer !== null) {
-                            getNameStreamer.innerHTML = unFocusedName + " " + unFocused + " seconds unfocused";
-                        }
-                        else {
-                            var unFocusedListCount = 0;
-                            var dropdownMenu = document.getElementById("dropdownForUnfocus");
-
-                            var aDropdown = document.createElement("a");
-                            aDropdown.setAttribute("class", "dropdown-item");
-                            aDropdown.setAttribute("href", "#" + unFocusedName + "-stream");
-                            aDropdown.setAttribute("id", unFocusedName + "-list");
-
-                            dropdownMenu.appendChild(aDropdown);
-
-                            var unFocusedListCount = document.querySelectorAll("a.dropdown-item").length;
-
-                            aDropdown.innerHTML = unFocusedName + " " + unFocused + " seconds unfocused";
-                            document.getElementById("dropdownUnfocus").innerHTML = "Unfocus List " + "(" + unFocusedListCount + ")";
-
-                            alertUnfocus(unFocusedName, unFocused);
-
-                        }
-
-                    }
-
-                    var aUnfocus = document.getElementById(streamerName + "-list");
-                    var alertGo = document.getElementById(streamerName + "-alert");
-                    var streamVideo = document.getElementById(streamerName + "-stream");
-
-                    if (aUnfocus != null) {
-
-                        aUnfocus.onclick = function () {
-                            streamVideo.style.border = '2px solid blue';
-                            setTimeout(function () {
-                                streamVideo.style.border = 'unset';
-                            }, 2000);
-
-                        }
-
-
-                    }
-
-                    if (alertGo != null) {
-
-                        alertGo.onclick = function () {
-                            streamVideo.style.border = '2px solid blue';
-                            setTimeout(function () {
-                                streamVideo.style.border = 'unset';
-                            }, 2000);
-                        }
-
-
-                    }
-
-                };
-
-                var aOnline = document.getElementById(streamerName + "-online");
-
-            if (aOnline != null) {
-
-                aOnline.onclick = function () {
-                    event.mediaElement.style.border = '2px solid blue';
-                    setTimeout(function () {
-                        event.mediaElement.style.border = 'unset';
-                    }, 2000);
-                }
-
-
-            }
-
-                connection.onleave = function (event) {
-
-                    var dt = new Date();
-                    var time = ("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" + ("0" + dt.getSeconds()).slice(-2);
-
-
-                    alertLeave(streamerName, time);
-                };
-            }
-
-        };
-
-        connection.onmute = function (e) {
-            console.log("ONMUTE");
-
-        };
-
-
-        //Textarea'da Shift+Enter yeni satır oluşturması, sadece Enter'a basılırsa mesaj gönderilsin diye
-        $("#textareaMessage").keydown(function (e) {
-            if (e.keyCode == 13 && !e.shiftKey) {
-                sendMessage();
-                e.preventDefault();
-            }
-        });
-
-        function sendMessage(e) {
-            if (document.getElementById("textareaMessage").value.length > 0) {
-
-                var name = connection.extra.name;
-
-                connection.send({
-                    message: document.getElementById("textareaMessage").value,
-                    sender: name
-                });
-
-                appendMsg(event);
-                document.getElementById("textareaMessage").value = '';
-
-                $('div#messagesContainer').scrollTop($('div#messagesContainer')[0].scrollHeight) //Scroll yeni mesaj gelince otomatik aşağı insin diye
-            }
-        }
-
-        function appendMsg(event) {
-
-            var dt = new Date();
-            var time = ("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" + ("0" + dt.getSeconds()).slice(-2);
-
+        // local streami div'e eklemek için
+        document.getElementById("localCamera").appendChild(video);
+    }
+
+    if (event.type === "remote") {
+        // oda da ki online sayısını proctor ekranında yazdırabilmek için
+        setInterval(checkOnlineCount, 10);
+        function checkOnlineCount() {
             try {
-
-                var chatMsgGroup = document.getElementById("chat-message-group");
-                $(chatMsgGroup).append(`<div class="card">
-                   <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-mute text-left"> ` + event.data.sender + `
-            </h6>
-                        <p class="card-text float-left">` + event.data.message + `<small class="float-end mt-2">` + time + `</small>
-                        </p>
-                    </div>
-                </div>`);
-
-                notification(); //Yeni mesaj gelince bildirim sesinin çalması için
-
+                var numberOfUsers = connection.getAllParticipants().length;
+                document.getElementById("numberOfOnlineUsers").textContent =
+                    numberOfUsers + " Online";
             } catch (e) {
                 if (e) {
+                }
+            }
+        }
 
-                    var message = document.getElementById("textareaMessage").value;
+        // proctor'un kendi sesini açıp kapatabilmesi için toggle button
+        var audioMuted = true;
+        var toggleVoice = document.getElementById("toggleVoice");
 
-                    var chatMsgGroup = document.getElementById("chat-message-group");
-                    $(chatMsgGroup).append(`<div class="card">
+        toggleVoice.onclick = function () {
+            var localStream = connection.streamEvents.selectFirst().stream;
+            var imgMic = document.getElementById("imgMic");
+
+            if (audioMuted == false) {
+                localStream.mute("audio");
+                audioMuted = true;
+                imgMic.setAttribute("class", "fas fa-microphone-slash");
+                toggleVoice.style.backgroundColor = "red";
+                // ses kapalıysa arka plan kırmızı
+            } else {
+                localStream.unmute();
+                audioMuted = false;
+                imgMic.setAttribute("class", "fas fa-microphone");
+                toggleVoice.style.backgroundColor = "green";
+                // ses açıksa arka plan yeşil
+            }
+        };
+
+        initHark({
+            stream: event.stream,
+            streamedObject: event,
+            conn: connection,
+        });
+
+        // her giren kullanıcı için oluşturulan elementler ve gerekli attribute'ler
+        var onlineUsers = document.getElementById("onlineUsers");
+
+        var aOnline = document.createElement("a");
+        aOnline.setAttribute("id", streamerName + "-online");
+        aOnline.setAttribute("href", "#" + streamerName + "-stream");
+
+        var divOnline = document.createElement("div");
+        divOnline.setAttribute("class", "person my-1 p-2");
+
+        var smallOnline = document.createElement("small");
+        smallOnline.setAttribute("class", "blockquote-footer my-auto d-block");
+
+        onlineUsers.appendChild(divOnline);
+        divOnline.appendChild(aOnline);
+
+        aOnline.append(streamerName);
+
+        aOnline.appendChild(smallOnline);
+        smallOnline.append(streamerUsername);
+
+        var divRemote = document.createElement("div");
+        divRemote.setAttribute("id", streamerName + "-stream");
+        divRemote.setAttribute("class", "remoteContainer");
+
+        var pRemote = document.createElement("p");
+        pRemote.setAttribute("id", "streamerName");
+
+        var proctorScreen = document.getElementById("proctorScreen");
+        proctorScreen.appendChild(divRemote);
+
+        divRemote.appendChild(pRemote);
+        divRemote.appendChild(video);
+
+        pRemote.append(streamerName);
+
+        // güncellenen extra.data verilerine ulaşabilmek için
+        connection.onExtraDataUpdated = function (event) {
+            var unFocusedName = event.extra.name;
+            var unFocused = event.extra.unFocus;
+
+            if (unFocused > 0) {
+                var getNameStreamer = document.getElementById(
+                    unFocusedName + "-list"
+                );
+
+                // gerekli elementler oluşturulmuşsa bir daha oluşturmayıp sadece içeriği güncellemek için
+                if (getNameStreamer !== null) {
+                    getNameStreamer.innerHTML =
+                        unFocusedName + " " + unFocused + " seconds unfocused";
+                    document.getElementById("dropdownUnfocus").style.color = "unset";
+                    getNameStreamer.style.backgroundColor = "yellow";
+                    setTimeout(function () {
+                        document.getElementById("dropdownUnfocus").style.color =
+                            "white";
+                        getNameStreamer.style.backgroundColor = "white";
+                    }, 500);
+                } else {
+                    // unfocus dropdown'da parantezler için toplam sayıyı gösterebilmek için
+                    var unFocusedListCount = 0;
+                    var dropdownMenu = document.getElementById("dropdownForUnfocus");
+
+                    var aDropdown = document.createElement("a");
+                    aDropdown.setAttribute("class", "dropdown-item");
+                    aDropdown.setAttribute("href", "#" + unFocusedName + "-stream");
+                    aDropdown.setAttribute("id", unFocusedName + "-list");
+
+                    dropdownMenu.appendChild(aDropdown);
+                    var unFocusedListCount =
+                        document.querySelectorAll("a.dropdown-item").length;
+
+                    aDropdown.innerHTML =
+                        unFocusedName + " " + unFocused + " seconds unfocused";
+                    document.getElementById("dropdownUnfocus").innerHTML =
+                        "Unfocus List " + "(" + unFocusedListCount + ")";
+
+                    alertUnfocus(unFocusedName);
+                }
+            }
+
+            var aUnfocus = document.getElementById(streamerName + "-list");
+            var alertGo = document.getElementById(streamerName + "-alert");
+            var streamVideo = document.getElementById(streamerName + "-stream");
+
+            // unfocus dropwdown'da tıklanılan kullancının stream'ine border eklemek için
+            if (aUnfocus != null) {
+                aUnfocus.onclick = function () {
+                    streamVideo.style.border = "2px solid blue";
+                    setTimeout(function () {
+                        streamVideo.style.border = "unset";
+                    }, 2000);
+                };
+            }
+            // alert'te tıklanılan kullancının stream'ine border eklemek için
+            if (alertGo != null) {
+                alertGo.onclick = function () {
+                    streamVideo.style.border = "2px solid blue";
+                    setTimeout(function () {
+                        streamVideo.style.border = "unset";
+                    }, 2000);
+                };
+            }
+        };
+
+        var aOnline = document.getElementById(streamerName + "-online");
+        // online öğrenciler de tıklanılan kullancının stream'ine border eklemek için
+        if (aOnline != null) {
+            aOnline.onclick = function () {
+                event.mediaElement.style.border = "2px solid blue";
+                setTimeout(function () {
+                    event.mediaElement.style.border = "unset";
+                }, 2000);
+            };
+        }
+
+        // odadan çıkan olursa proctor'a verilen alert'te isim ve saatini yazdırmak için
+        connection.onleave = function (event) {
+            var dt = new Date();
+            var time =
+                ("0" + dt.getHours()).slice(-2) +
+                ":" +
+                ("0" + dt.getMinutes()).slice(-2) +
+                ":" +
+                ("0" + dt.getSeconds()).slice(-2);
+
+            alertLeave(event.extra.name, time);
+        };
+
+        // odaya giren olursa proctor'a verilen alert'te isim ve saatini yazdırmak için
+        var dt = new Date();
+        var time =
+            ("0" + dt.getHours()).slice(-2) +
+            ":" +
+            ("0" + dt.getMinutes()).slice(-2) +
+            ":" +
+            ("0" + dt.getSeconds()).slice(-2);
+
+        alertEntering(streamerName, time);
+    }
+};
+
+//Textarea'da Shift+Enter yeni satır oluşturması, sadece Enter'a basılırsa mesaj gönderilsin diye
+$("#textareaMessage").keydown(function (e) {
+    if (e.keyCode == 13 && !e.shiftKey) {
+        sendMessage();
+        e.preventDefault();
+    }
+});
+
+// textarea boş işe görmesin doluysa göndersin diye
+function sendMessage(e) {
+    if (document.getElementById("textareaMessage").value.length > 0) {
+        var name = connection.extra.name;
+
+        connection.send({
+            message: document.getElementById("textareaMessage").value,
+            sender: name,
+        });
+
+        appendMsg(event);
+        document.getElementById("textareaMessage").value = "";
+
+        $("div#messagesContainer").scrollTop(
+            $("div#messagesContainer")[0].scrollHeight
+        ); //Scroll yeni mesaj gelince otomatik aşağı insin diye
+    }
+}
+// mesajın gönderilen saati
+function appendMsg(event) {
+    var dt = new Date();
+    var time =
+        ("0" + dt.getHours()).slice(-2) +
+        ":" +
+        ("0" + dt.getMinutes()).slice(-2) +
+        ":" +
+        ("0" + dt.getSeconds()).slice(-2);
+
+    try {
+        // mesajı karşı tarafa göndersin diye
+        var chatMsgGroup = document.getElementById("chat-message-group");
+        $(chatMsgGroup).append(
+            `<div class="card">
                    <div class="card-body">
-                        <h6 id="` + connection.extra.name + `-chat" class="card-subtitle mb-2 text-mute text-left"> ` + connection.extra.name + `
+                        <h6 class="card-subtitle mb-2 text-mute text-left"> ` +
+            event.data.sender +
+            `
             </h6>
-                        <p class="card-text float-left">` + message + `<small class="float-end mt-2">` + time + `</small>
+                        <p class="card-text float-left">` +
+            event.data.message +
+            `<small class="float-end mt-2">` +
+            time +
+            `</small>
                         </p>
                     </div>
-                </div>`);
+                </div>`
+        );
 
-                }
+        notification(); //Yeni mesaj gelince bildirim sesinin çalması için
+    } catch (e) {
+        if (e) {
+            // mesajı gönderenin ekranında yazdırsın diye
+            var message = document.getElementById("textareaMessage").value;
+
+            var chatMsgGroup = document.getElementById("chat-message-group");
+            $(chatMsgGroup).append(
+                `<div class="card">
+                   <div class="card-body">
+                        <h6 id="` +
+                connection.extra.name +
+                `-chat" class="card-subtitle mb-2 text-mute text-left"> ` +
+                connection.extra.name +
+                `
+            </h6>
+                        <p class="card-text float-left">` +
+                message +
+                `<small class="float-end mt-2">` +
+                time +
+                `</small>
+                        </p>
+                    </div>
+                </div>`
+            );
+        }
+    }
+}
+
+// bağlantıda gönderilmiş mesaj varsa
+connection.onmessage = appendMsg;
+
+function initHark(args) {
+
+    var conn = args.conn;
+    var streamedObject = args.streamedObject;
+    var stream = args.stream;
+
+    var options = {};
+    var speechEvents = hark(stream, options);
+
+    // konuşan olursa bağlantıya konuştuğunu belirtmek için
+    speechEvents.on("speaking", function () {
+        conn.onspeaking(streamedObject);
+    });
+
+    // konuşan susunca bağlantıya sustuğunu belirtmek için
+    speechEvents.on("stopped_speaking", function () {
+        conn.onsilence(streamedObject);
+    });
+
+    // konuşanın stream penceresine border eklemek için
+    connection.onspeaking = function (e) {
+        try {
+            e.mediaElement.style.border = "2px solid red";
+        } catch (e) {
+            if (e) {
             }
         }
+    };
+    // konuşan susunca border'ı kaldırmak için
+    connection.onsilence = function (e) {
+        try {
+            e.mediaElement.style.border = "";
+        } catch (e) {
+            if (e) {
+            }
+        }
+    };
 
-        connection.onmessage = appendMsg;
+    // konuşanın sesine bağlı olarak borderın büyüyüp küçülmesi
+    connection.onvolumechange = function (e) {
+        e.mediaElement.style.borderWidth = e.volume;
+    };
+}
 
-        //Bildirim sesi fonksiyonu
-        function notification() {
-            var audio = document.getElementById("notificationAudio");
-            audio.play();
+// bağlantı kesilirse gerekli elementleri silmek için
+connection.onstreamended = function (event) {
+    var video = document.getElementById(event.streamid);
+    var divStreamerName = document.getElementById(
+        event.extra.name + "-online"
+    );
+    if (video && video.parentNode) {
+        video.parentNode.remove();
+    }
+    try {
+        divStreamerName.parentNode.remove();
+    } catch (e) {
+        if (e) {
+        }
+    }
+};
+
+function leaveRoom() {
+    // tüm kullanıcılarla bağlantının kesilmesi için
+    connection.getAllParticipants().forEach(function (pid) {
+        connection.disconnectWith(pid);
+    });
+
+    // tüm remote stream'leri durdurmak için
+    connection.attachStreams.forEach(function (remoteStream) {
+        remoteStream.stop();
+    });
+
+    // tüm local stream'leri durdurmak için
+    connection.attachStreams.forEach(function (localStream) {
+        localStream.stop();
+    });
+
+    // kamera ve microfonun bağlantısını kesmek için
+    connection.dontCaptureUserMedia = true;
+
+    // socket.io kapatmak için
+    connection.closeSocket();
+    // bağlantıyı kapatmak için
+    connection.close();
+}
+
+// proctor odayı açabilmesi için
+function openRoom() {
+    var roomName = document.getElementById("roomID").value;
+    // şifrenin yazılıp yazılmadığını kontrol etmek için
+    var password = document.getElementById("roomPassword").value;
+    if (!password || !password.length) {
+        var error = "Please enter a valid password.";
+        var title = password + ` not valid`;
+        alertError(title, error);
+        return;
+    }
+
+    connection.password = password;
+
+    // odanın açılması için
+    connection.open(roomName, function (isRoomOpened, roomid, error) {
+        // olabilecekler alert'leri verebilmek için
+        if (error) {
+            if (error === "Room not available") {
+                var title =
+                    "Someone already created this room. Please either join or create a separate room.";
+                alertError(error, title);
+                return;
+            }
+
+            var title = "Room not available.";
+            alertError(title, error);
         }
 
-            function initHark(args) {
-                if (!window.hark) {
-                    throw 'Please link hark.js';
+        // görülebilir veya gizlenecekler elementler
+        document.getElementById("body-proctor").style.visibility = "visible";
+
+        document.getElementById("btnJoin").style.visibility = "hidden";
+        document.getElementById("roomID").style.visibility = "hidden";
+        document.getElementById("roomPassword").style.visibility = "hidden";
+
+        document.getElementById("btnJoin").style.display = "none";
+        document.getElementById("roomID").style.display = "none";
+        document.getElementById("roomPassword").style.display = "none";
+
+        document.getElementById("btnClose").style.visibility = "visible";
+        document.getElementById("btnClose").style.display = "unset";
+
+        var divRoom = document.getElementById("divRoom");
+        divRoom.style.border = "unset";
+        divRoom.style.margin = "unset";
+        divRoom.style.padding = "unset";
+        divRoom.style.top = "unset";
+        divRoom.style.left = "unset";
+        divRoom.style.visibility = "unset";
+
+        divRoom.style.position = "absolute";
+        divRoom.style.top = "1%";
+        divRoom.style.right = "2%";
+        divRoom.style.display = "block";
+
+        alertSucces(roomName);
+    });
+
+    // oda ismini ana ekrana yazdırmak için
+    if (connection.isOnline === true) {
+        document.getElementById("mainCol").textContent = roomName;
+        // oda bilgilerini kopyalayabilinmesi için görülemez bir p elementine oda ismini ve şifresini yazdırmak için
+        document.getElementById("roomDetails").textContent =
+            "Room Name: " + roomName + "\n" + "Room Password: " + password;
+    }
+}
+
+// öğrenci odaya girebilmesi için
+function joinRoom(event) {
+    var roomName = document.getElementById("roomID").value;
+    // şifrenin yazılıp yazılmadığını kontrol etmek için
+    var password = document.getElementById("roomPassword").value;
+    if (!password || !password.length) {
+        var error = "Please enter a valid password.";
+        var title = password + ` not valid`;
+        alertError(title, error);
+        return;
+    }
+
+    connection.password = password;
+
+    // odaya girsin diye
+    connection.join(roomName, function (isJoinedRoom, roomid, error) {
+        // olabilecekler alert'leri verebilmek için
+        if (error) {
+            if (error === "Invalid password") {
+                var title = password + ` not correct`;
+                alertError(error, title);
+                if (!password || !password.length) {
+                    alert(error);
                     return;
                 }
-
-                var conn = args.conn;
-                var streamedObject = args.streamedObject;
-                var stream = args.stream;
-
-                var options = {};
-                var speechEvents = hark(stream, options);
-
-                speechEvents.on('speaking', function () {
-                    conn.onspeaking(streamedObject);
-                });
-
-                speechEvents.on('stopped_speaking', function () {
-                    conn.onsilence(streamedObject);
-                });
-
-
-                connection.onspeaking = function (e) {
-                    try {
-                        e.mediaElement.style.border = '1px solid red';
-                    } catch (e) {
-                        if (e) { }
-                    }
-                };
-
-                connection.onsilence = function (e) {
-                    try {
-                        e.mediaElement.style.border = '';
-                    } catch (e) {
-                        if (e) { }
-                    }
-                };
-
-                connection.onvolumechange = function (e) {
-                    e.mediaElement.style.borderWidth = e.volume;
-                };
-
+                connection.password = password;
+                return;
             }
+            if (error === "Room not available") {
+                var title =
+                    "This room does not exist. Please either create it or wait for moderator to enter in the room.";
+                alertError(error, title);
+                return;
+            }
+            if (error === "Room full") {
+                alertEnteringClose();
+                return;
+            }
+            var title = "Room not available.";
+            alertError(title, error);
+            return;
+        }
 
-            connection.onstreamended = function (event) {
-                var video = document.getElementById(event.streamid);
-                var divStreamerName = document.getElementById(event.extra.name + "-online");
-                if (video && video.parentNode) {
-                    video.parentNode.remove();
-                }
-                divStreamerName.parentNode.remove();
-        };
-
-        function closeRoom () {
-            // disconnect with all users
-            connection.getAllParticipants().forEach(function (pid) {
-                connection.disconnectWith(pid);
-            });
-
-            // stop all local cameras
-            connection.attachStreams.forEach(function (localStream) {
-                localStream.stop();
-            });
-
-            // close socket.io connection
-            connection.closeSocket();
-        };
-
-        function openRoom() {
-
-            var roomName = document.getElementById("roomID").value;
-
-                var password = document.getElementById("roomPassword").value;
-                if (!password || !password.length) {
-                    var error = 'Please enter a valid password.';
-                    var title = password + ` not valid`;
-                    alertError(title, error)
-                        return;
-                    }
-
-                    connection.password = password;
-
-
-            connection.open(roomName, function (isRoomOpened, roomid, error) {
-                    if (error) {
-                        if (error === 'Room not available') {
-                            var title = 'Someone already created this room. Please either join or create a separate room.';
-                            alertError(error, title);
-                            return;
-                        }
-
-                        var title = 'Room not available.';
-                        alertError(title, error);
-                    }
-
-
-                document.getElementById("body-proctor").style.visibility = "visible";
+        // odaya giriş yapılabiliyor mu yapılamıyor diye kontrol etmek için "try"
+        try {
+            connection.onopen = function (event) { // oda full ise veya giriş kapalıysa girememesi için "connection.onopen" içinde
+                document.getElementById("body-exam").style.visibility = "visible";
 
                 document.getElementById("btnJoin").style.visibility = "hidden";
                 document.getElementById("roomID").style.visibility = "hidden";
@@ -752,133 +593,67 @@
                 document.getElementById("btnLeave").style.visibility = "visible";
                 document.getElementById("btnLeave").style.display = "unset";
 
-                document.getElementById("roomStatus").style.visibility = "visible";
-                document.getElementById("roomStatus").style.display = "unset";
+                var divRoom = document.getElementById("divRoom");
+                divRoom.style.border = "unset";
+                divRoom.style.margin = "unset";
+                divRoom.style.padding = "unset";
+                divRoom.style.top = "unset";
+                divRoom.style.left = "unset";
+                divRoom.style.visibility = "unset";
 
-                    var divRoom = document.getElementById("divRoom");
-                    divRoom.style.border = "unset";
-                    divRoom.style.margin = "unset";
-                    divRoom.style.padding = "unset";
-                    divRoom.style.top = "unset";
-                    divRoom.style.left = "unset";
-                    divRoom.style.visibility = "unset";
+                divRoom.style.position = "absolute";
+                divRoom.style.top = "1%";
+                divRoom.style.right = "2%";
+                divRoom.style.display = "block";
 
-                    divRoom.style.position = "absolute";
-                    divRoom.style.top = "1%";
-                    divRoom.style.right = "2%";
-                    divRoom.style.display = "block";
+                document.getElementById("mainCol").textContent = roomName;
 
-                    alertSucces(roomName);
+                alertSucces(roomName);
 
-                });
+                // oda hala açık mı diye kontrol ediyor
+                (function checkRoom() {
+                    connection.checkPresence(
+                        roomName,
+                        function (isRoomExist, roomid, error) {
+                            // oda kapanınca
+                            if (isRoomExist === false) {
+                                alertRoomClosed();
+                                // tüm kullanıcılarla bağlantıyı kesiyor
+                                connection.getAllParticipants().forEach(function (pid) {
+                                    connection.disconnectWith(pid);
+                                });
 
-                if (connection.isOnline === true)
-                    document.getElementById("roomStatus").textContent = 'Room Name: ' + roomName;
-        }
+                                // remote stream'leri durduruyor
+                                connection.attachStreams.forEach(function (remoteStream) {
+                                    remoteStream.stop();
+                                });
 
-        function joinRoom() {
+                                // local stream'leri durduruyor
+                                connection.attachStreams.forEach(function (localStream) {
+                                    localStream.stop();
+                                });
 
-            var roomName = document.getElementById("roomID").value;
+                                connection.dontCaptureUserMedia = true;
 
-            var password = document.getElementById("roomPassword").value;
-            if (!password || !password.length) {
-                var error = 'Please enter a valid password.';
-                var title = password + ` not valid`;
-                alertError(title, error)
-                return;
-            }
-
-            connection.password = password;
-
-                connection.join(roomName, function (isJoinedRoom, roomid, error) {
-                    if (error) {
-                        if (error === 'Invalid password') {
-                            var title = password + ` not correct`;
-                            alertError(error, title);
-                            if (!password || !password.length) {
-                                alert(error);
+                                // socket.io bağlantısını kapatıyor
+                                connection.closeSocket();
+                                // bağlantıyı kesiyor
+                                connection.close();
                                 return;
                             }
-                            connection.password = password;
-                            return;
+
+                            setTimeout(checkRoom, 1000); // 1 saniyede bir kontrol ediyor odanın hala açık olup olmamasını
                         }
-                        if (error === 'Room not available') {
-                            var title = 'This room does not exist. Please either create it or wait for moderator to enter in the room.';
-                            alertError(error, title)
-                            return;
-                        }
-                        var title = 'Room not available.';
-                        alertError(title, error);
-                    }
-
-
-                    document.getElementById("body-exam").style.visibility = "visible";
-
-                    document.getElementById("btnJoin").style.visibility = "hidden";
-                    document.getElementById("roomID").style.visibility = "hidden";
-                    document.getElementById("roomPassword").style.visibility = "hidden";
-
-                    document.getElementById("btnJoin").style.display = "none";
-                    document.getElementById("roomID").style.display = "none";
-                    document.getElementById("roomPassword").style.display = "none";
-
-                    document.getElementById("roomStatus").style.visibility = "visible";
-                    document.getElementById("roomStatus").style.display = "unset";
-
-                    document.getElementById("btnLeave").style.visibility = "visible";
-                    document.getElementById("btnLeave").style.display = "unset";
-
-                    var divRoom = document.getElementById("divRoom");
-                    divRoom.style.border = "unset";
-                    divRoom.style.margin = "unset";
-                    divRoom.style.padding = "unset";
-                    divRoom.style.top = "unset";
-                    divRoom.style.left = "unset";
-                    divRoom.style.visibility = "unset";
-
-                    divRoom.style.position = "absolute";
-                    divRoom.style.top = "1%";
-                    divRoom.style.right = "2%";
-                    divRoom.style.display = "block";
-
-                    alertSucces(roomName);
-                });
-            if (connection.isOnline === true)
-                document.getElementById("roomStatus").textContent = 'Room Name: ' + roomName;
+                    );
+                })();
             };
-
-    //   function fullscreen() {
-    //   if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-    //       (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-    //       if (document.documentElement.requestFullScreen) {
-    //           document.documentElement.requestFullScreen();
-    //       } else if (document.documentElement.mozRequestFullScreen) {
-    //           document.documentElement.mozRequestFullScreen();
-    //       } else if (document.documentElement.webkitRequestFullScreen) {
-    //           document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-    //       }
-    //   } else {
-    //       if (document.cancelFullScreen) {
-    //           document.cancelFullScreen();
-    //       } else if (document.mozCancelFullScreen) {
-    //           document.mozCancelFullScreen();
-    //       } else if (document.webkitCancelFullScreen) {
-    //           document.webkitCancelFullScreen();
-    //       }
-    //   }
-    // }
-
-    //     $(document).on("keydown",function(e){
-    // 	  if(e.keyCode===122 || e.keyCode===27){
-    //       var r = confirm("Are you sure exit to exam?");
-    // if (r == true) {
-    //   window.close();
-    // } else {
-    //   return false;
-    // }
-    //     }
-    //     })
-    // ----------------------- FULL SCREEN
-
+        } catch (e) {
+            if (e) {
+                alertEnteringClose(); // oda full veya giriş kapalıysa girişin kapalı olduğu alertini versin diye
+            }
+        }
+    });
+}
     </script>
+
 </body>

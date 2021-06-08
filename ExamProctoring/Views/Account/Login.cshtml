@@ -15,14 +15,13 @@
                     <div class="modal-body">
                         @using (Html.BeginForm("ExamPage", "", FormMethod.Post))
                         {
-                            //<form method="post">
-                            <label for="inputName" class="visually-hidden">Student Number</label>
+                            <label for="inputName" class="visually-hidden">User Name</label>
                             <input type="text"
                                    accesskey="Username"
                                    name="account_username"
                                    class="form-control mb-2"
-                                   placeholder="Student Number"
-                                   @*required*@
+                                   placeholder="User Name"
+                                   required
                                    autofocus />
                             <label for="inputPassword" class="visually-hidden">Password</label>
                             <input type="password"
@@ -30,14 +29,13 @@
                                    name="account_password"
                                    class="form-control"
                                    placeholder="Password"
-                                   @*required*@>
+                                   required>
                             <div class="mt-3">
                                 <button class="btn btn-sm btn-outline-primary float-end mt-2"
                                         type="submit">
                                     Sign in
                                 </button>
                             </div>
-                            //</form>
                         }
                     </div>
                 </div>

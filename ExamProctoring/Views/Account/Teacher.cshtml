@@ -1,21 +1,23 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Teacher";
     Layout = "~/Views/_LayoutPage1.cshtml";
 }
 <body id="body-proctor" class="bg-light" style="height: 100%;">
 
     <div class="row py-2 mb-auto mt-1 mx-2 border border-dark rounded-2 shadow"
-         id="mainScreen"
-         style="height: 100%;">
+         id="mainScreen">
         <div class="row col-5 px-3 border-right border-dark">
-            <div class="col-4 h-auto">
-                <h3 class="text-center">Kişiler</h3>
+            <div class="col-4">
+                <h3 class="text-center" id="numberOfOnlineUsers">Online Users</h3>
                 <hr />
-                <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
+                <div class="
+            border-dark border-right
+            scrollbar-deep-purple
+            bordered-deep-purple
+            thin
+          "
                      style="overflow-y: scroll; height: 90vh">
-                    <div id="onlineUsers" class="m-auto">
-                    </div>
+                    <div id="onlineUsers" class="m-auto"></div>
                 </div>
                 <!-- kişiler -->
             </div>
@@ -23,42 +25,93 @@
                 <h3 class="text-center">Chat</h3>
                 <hr />
                 <div class="scrollbar-deep-purple bordered-deep-purple thin"
-                     style="overflow-y: scroll; height: 80vh" id="messagesContainer">
+                     style="overflow-y: scroll; height: 80vh"
+                     id="messagesContainer">
                     <div class="container">
                         <div class="chat-group" id="chat-message-group">
                             <!-- CHAT -->
                         </div>
                     </div>
                 </div>
-                <div id="input-group" class="input-group mt-2" style="height:8vh">
-                    <textarea id="textareaMessage" class="form-control h-auto pb-1" rows="2" style="overflow:hidden; resize:none"></textarea>
+                <div id="input-group" class="input-group mt-2">
+                    <textarea id="textareaMessage"
+                              class="form-control h-auto pb-1"
+                              rows="2"
+                              style="overflow: hidden; resize: none"></textarea>
                     <span class="input-group-btn">
-                        <button class="btnChat btn btn-secondary ms-2 h-100" type="button" id="sendMessage" onclick="sendMessage();"><i class="far fa-paper-plane"></i></button>
+                        <button class="btnChat btn btn-secondary ms-2 h-100"
+                                type="button"
+                                id="sendMessage"
+                                onclick="sendMessage();">
+                            <i class="far fa-paper-plane"></i>
+                        </button>
                     </span>
                 </div>
             </div>
         </div>
         <div class="col-7">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownUnfocus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Unfocus List
-                </button>
-                <div id="dropdownForUnfocus" class="dropdown-menu" aria-labelledby="dropdownUnfocus">
+            <div style="margin-bottom: 50px;">
+                <div id="tools">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownUnfocus"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            Unfocus List
+                        </button>
+                        <div id="dropdownForUnfocus"
+                             class="dropdown-menu"
+                             aria-labelledby="dropdownUnfocus"></div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownFace"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            Face Detect List
+                        </button>
+                        <div id="dropdownForFace"
+                             class="dropdown-menu"
+                             aria-labelledby="dropdownFace"></div>
+                    </div>
+                    <button id="toggleVoice">
+                        <i id="imgMic" class="fas fa-microphone-slash"> </i>
+                        <span class="tooltipToggleVoice">Toggle voice</span>
+                    </button>
+                    <button id="copyRoomInformaiton" onclick="copyToClipboard(`roomDetails`)">
+                        <i class="fas fa-clone"></i>
+                        <span class="tooltipCopyRoomInformaiton">Copy Room Information</span>
+                    </button>
+                    <button id="clearAllAlert" type="button" onclick="clearAllAlert();">
+                        <i class="fas fa-broom"></i>
+                        <span class="tooltipClearAllAlert">Clear All Alert</span>
+                    </button>
                 </div>
+                <h3 id="mainCol" class="text-center">Gözetmen Ekranı</h3>
             </div>
-            <button id="toggleMute"><i id="imgMic" class="fas fa-microphone-slash"> </i></button>
-            <h3 class="text-center">Gözetmen Ekranı</h3>
             <div id="divRoom">
                 <span>
-                    <textarea id="roomID" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room ID"></textarea><textarea id="roomPassword" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room Password"></textarea><button id="btnJoin" class="btn btn-sm" onclick="openRoom();">Open and Join Room</button><button id="btnLeave" class="btn btn-sm" onclick="closeRoom();">Leave and Close Room</button>
+                    <textarea id="roomID" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room ID" autofocus required></textarea>
+                    <textarea id="roomPassword" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room Password" required></textarea>
+                    <button id="btnJoin" class="btn btn-sm" onclick="openRoom();">Open and Join Room</button>
+                    <button id="btnClose" class="btn btn-sm" onclick="leaveRoom();"><i class="far fa-times-circle fa-2x"></i></button>
                 </span>
-                <small id="roomStatus" class="text-center"></small>
             </div>
-            <hr />
-            <div class="px-3 scrollbar-deep-purple bordered-deep-purple thin proctor-screen" id="proctorScreen"
-                 style="overflow-y: scroll; max-height: 85vh">
+            <div class="
+       px-3
+       scrollbar-deep-purple
+       bordered-deep-purple
+       thin
+       proctor-screen
+     " id="proctorScreen" style="overflow-y: scroll; height: 90vh">
+
             </div>
             <!-- sınav/gözetmen -->
         </div>
     </div>
+    <p id="roomDetails" style="visibility:hidden; display:none;"></p>
 </body>
