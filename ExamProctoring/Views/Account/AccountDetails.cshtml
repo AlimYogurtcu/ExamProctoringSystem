@@ -1,0 +1,53 @@
+﻿@model ExamProctoring.Models.Account
+
+@{
+    ViewBag.Title = "AccountDetails";
+    Layout = "~/Views/_LayoutPage1.cshtml";
+}
+
+<h2>Account Details</h2>
+
+<table style="font-family:Arial">
+    <tr>
+        <td>
+            <b>Account ID:</b>
+        </td>
+        <td>
+            @Model.account_id
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b>Account Username:</b>
+        </td>
+        <td>
+            @Model.account_username
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b>Account Password:</b>
+        </td>
+        <td>
+            @Model.account_password
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b>Account Role:</b>
+        </td>
+        <td>
+            @Model.account_role
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b>Account Status:</b>
+        </td>
+        <td>
+            @Model.account_status
+        </td>
+    </tr>
+
+</table>
+

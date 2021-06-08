@@ -3,50 +3,51 @@
     ViewBag.Title = "Login";
     Layout = "~/Views/_LayoutPage1.cshtml";
 }
-<body class="bg-light overflow-hidden">
-    <div class="modal fade" id="signinModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <img class="mx-auto" src="https://via.placeholder.com/100" alt="" />
-                </div>
-                <div class="modal-body">
-                    <form action="Verify" method="post">
-                        <label for="inputName" class="visually-hidden">Student Number</label>
-                        <input type="text"
-                               name="accountUsername"
-                               class="form-control mb-2"
-                               placeholder="Student Number"
-                               @*required*@
-                               autofocus />
-                        <label for="inputPassword" class="visually-hidden">Password</label>
-                        <input type="password"
-                               name="accountPassword"
-                               class="form-control"
-                               placeholder="Password"
-                               @*required*@>
-                        <div class="mt-3">
-                            <input class="ms-1 mt-1" type="checkbox" value="remember-me" />
-                            Remember me
-                            <!-- <button
-                               class="btn btn-sm btn-outline-danger float-end offset-1 closefirstmodal confirmclosed"
-                               type="button"
-                               data-dismiss="modal"
-                               onclick="self.close()"
-                               >
-                               Close
-                               </button> -->
-                            <button class="btn btn-sm btn-outline-primary float-end mt-2"
-                                    type="submit">
-
-                                <!-- onclick="fullscreen();" -->
-                                Sign in
-                            </button>
-                        </div>
-                    </form>
+@if (Session["user"] == null)
+{
+    <body class="bg-light overflow-hidden">
+        <div class="modal fade" id="signinModal" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <img class="mx-auto" src="https://via.placeholder.com/100" alt="" />
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("ExamPage", "", FormMethod.Post))
+                        {
+                            //<form method="post">
+                            <label for="inputName" class="visually-hidden">Student Number</label>
+                            <input type="text"
+                                   accesskey="Username"
+                                   name="account_username"
+                                   class="form-control mb-2"
+                                   placeholder="Student Number"
+                                   @*required*@
+                                   autofocus />
+                            <label for="inputPassword" class="visually-hidden">Password</label>
+                            <input type="password"
+                                   accesskey="Password"
+                                   name="account_password"
+                                   class="form-control"
+                                   placeholder="Password"
+                                   @*required*@>
+                            <div class="mt-3">
+                                <button class="btn btn-sm btn-outline-primary float-end mt-2"
+                                        type="submit">
+                                    Sign in
+                                </button>
+                            </div>
+                            //</form>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</body>
+    </body>
+}
+else
+{
+    @Html.Action("ExamPageSessionNotNull", "Account");
+}
+
 

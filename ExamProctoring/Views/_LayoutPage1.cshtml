@@ -1,4 +1,5 @@
-﻿<head>
+﻿﻿
+<head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
@@ -6,7 +7,89 @@
           integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
           crossorigin="anonymous" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link href="https://cdn.socket.io/4.0.1/socket.io.js" />
+    <link rel="stylesheet" href="~/Scripts/toastr.css"/>
     <style>
+        html {
+            height: 99%;
+        }
+
+        body {
+            position: relative;
+        }
+
+        #btnJoin {
+            border-bottom: 1px solid black;
+        }
+
+        #roomTxt {
+            height: 30px;
+        }
+
+        .dropdown {
+            height: 30px;
+            position: absolute;
+        }
+
+        #divRoom {
+            position: absolute;
+            top: 1%;
+            right: 2%;
+            display: block;
+        }
+
+        #divRoom span {
+            display: flex;
+        }
+
+        #roomStatus {
+            position: relative;
+        }
+
+        #localCamera video {
+            bottom: 0px;
+            right: 1%;
+            position: absolute;
+            height: 200px;
+            width: 200px;
+        }
+
+        #proctorScreen {
+            position: relative;
+        }
+
+        .remoteContainer {
+            position: relative;
+            float: left;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            height: 250px;
+            width: 250px;
+        }
+
+        #proctorScreen video {
+            height: 100%;
+            width: 100%;
+            background-color: rgb(218, 228, 216);
+            position: relative;
+            top: 0;
+            -o-object-fit: cover;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        #streamerName {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+
+        video::-webkit-media-controls {
+            display: none;
+        }
+
         .scrollbar-deep-purple::-webkit-scrollbar-track {
             -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
             background-color: #f5f5f5;
@@ -47,19 +130,28 @@
             cursor: default;
         }
 
-        /*.input-group {
+        .alert {
+            display: none;
+        }
+
+        .alert-danger {
+            position: fixed;
+            bottom: 5px;
+            right: 5%;
+            width: 20%;
+        }
+
+        .alert a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .alert .close {
             position: absolute;
-            height: 8%;
-            bottom: 0;
+            right: 5px;
+            top: 2px;
         }
 
-        .btnChat {
-            height: 100%;
-        }*/
-
-        html {
-            height: 99%;
-        }
     </style>
 
 </head>
@@ -70,76 +162,412 @@
         @RenderSection("scripts", false)
     </div>
 
+    @*Bildirim sesi*@
+    <audio id="notificationAudio">
+        <source src="~/audio/ding-sound-effect.mp3" type="audio/mpeg">
+    </audio>
+
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
             integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
             integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
             crossorigin="anonymous"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script src="https://rtcmulticonnection.herokuapp.com/dist/RTCMultiConnection.min.js"></script>
+    <script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
+    <script src="~/Scripts/toastr.js"></script>
+
+
+
     <script>
-        $(function () {
-            $("#signinModal").modal("show");
-        });
 
-        $("#signinModal").modal({
-            backdrop: "static",
-            keyboard: false,
-        });
+            //Textarea'da Shift+Enter yeni satır oluşturması, sadece Enter'a basılırsa mesaj gönderilsin diye
+            $("textarea").keydown(function (e) {
+                if (e.keyCode == 13 && !e.shiftKey) {
+                    document.getElementById('sendMessage').click();
+                    e.preventDefault();
+                }
+            });
 
-        //$("#signinModal").on("hidden.bs.modal", function (e) {
-        //    $("#mainScreen").css({ opacity: 1 });
-        //});
-
-        //$("#login").click(function () {
-        //    $("#signinModal").modal("hide");
-        //});
-
-        //$(window).bind('beforeunload', function () {
-        //    return 'Are you sure you want to leave?';
-        //});
-
-        setInterval(checkFocus, 200);
-        function checkFocus() {
-            var a = document.hasFocus();
-            if (a == true) {
-                console.log("FOCUS");
+            //Bildirim sesi fonksiyonu
+            function notification() {
+                var audio = document.getElementById("notificationAudio");
+                audio.play();
             }
-            else if (a == false) {
-                console.log("UNFOCUS");
+
+            //function foreach(var item in Model)
+            //{
+            //    $('#online-users').append(`< div class="person my-1 p-2">` + item.accountUsername + `</div>`);
+            //}
+
+            $(function () {
+                // Reference the auto-generated proxy for the hub.
+                var chat = $.connection.chatHub;
+                // Create a function that the hub can call back to display messages.
+                chat.client.addNewMessageToPage = function (name, message) {
+
+                    var dt = new Date();
+                    var time = ("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" + ("0" + dt.getSeconds()).slice(-2);
+
+                    // Add the message to the page.
+                    var encodedName = $('<div />').text(name).html();
+                    var encodedMsg = $('<div />').text(message).html();
+
+
+                    //Textarea boşsa gönderim yapmaması için
+                    if (encodedMsg.length > 0) {
+
+                        $('#chat-message-group').append(`<div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-2 text-muteViewBag text-left"> ` + encodedName + `
+                            </h6>
+                                        <p class="card-text float-left">` + encodedMsg + `<small class="float-end mt-2">` + time + `</small>
+                                        </p>
+                                    </div>
+                                </div>`);
+
+                        $('div#messagesContainer').scrollTop($('div#messagesContainer')[0].scrollHeight) //Scroll yeni mesaj gelince otomatik aşağı insin diye
+                        notification(); //Yeni mesaj gelince bildirim sesinin çalması için
+                    }
+
+                };
+                /*String loggedUser = sessionStorage["loggedUser"] as String;
+                // Get the user name and store it to prepend to messages.
+                $('#displayname').value = ;
+                // Set initial focus to message input box.
+                $('#textareaMessage').focus();*/
+                // Start the connection.
+                $.connection.hub.start().done(function () {
+                    $('#sendMessage').click(function () {
+                        // Call the Send method on the hub.
+                        chat.server.send(`@ViewBag.Name`, $('#textareaMessage').val());
+                        // Clear text box and reset focus for next comment.
+                        $('#textareaMessage').val('').focus();
+                    });
+                });
+            });
+            // This optional function html-encodes messages for display in the page.
+            function htmlEncode(value) {
+                var encodedValue = $('<div />').text(value).html();
+                return encodedValue;
             }
+
+
+
+    $(function () {
+    $("#signinModal").modal("show");
+    });
+
+    $("#signinModal").modal({
+    backdrop: "static",
+    keyboard: false,
+    });
+
+    //$("#signinModal").on("hidden.bs.modal", function (e) {
+    //    $("#mainScreen").css({ opacity: 1 });
+    //});
+
+    //$("#login").click(function () {
+    //    $("#signinModal").modal("hide");
+    //});
+
+    //$(window).bind('beforeunload', function () {
+    //    return 'Are you sure you want to leave?';
+    //});
+
+
+        function alertUnfocus(name, second) {
+
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
+            toastr.error(`<a href=#"` + name + `-stream" class="alert-link">` + name + `</a>`, "unfocused!");
         }
 
-                                                         //   function fullscreen() {
-                                                         //   if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-                                                         //       (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-                                                         //       if (document.documentElement.requestFullScreen) {
-                                                         //           document.documentElement.requestFullScreen();
-                                                         //       } else if (document.documentElement.mozRequestFullScreen) {
-                                                         //           document.documentElement.mozRequestFullScreen();
-                                                         //       } else if (document.documentElement.webkitRequestFullScreen) {
-                                                         //           document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-                                                         //       }
-                                                         //   } else {
-                                                         //       if (document.cancelFullScreen) {
-                                                         //           document.cancelFullScreen();
-                                                         //       } else if (document.mozCancelFullScreen) {
-                                                         //           document.mozCancelFullScreen();
-                                                         //       } else if (document.webkitCancelFullScreen) {
-                                                         //           document.webkitCancelFullScreen();
-                                                         //       }
-                                                         //   }
-                                                         // }
+        function alertSuccesOpen(room) {
 
-                                                         //     $(document).on("keydown",function(e){
-                                                         // 	  if(e.keyCode===122 || e.keyCode===27){
-                                                         //       var r = confirm("Are you sure exit to exam?");
-                                                         // if (r == true) {
-                                                         //   window.close();
-                                                         // } else {
-                                                         //   return false;
-                                                         // }
-                                                         //     }
-                                                         //     })
-                                                         // ----------------------- FULL SCREEN
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": true,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "3000",
+                "hideDuration": "5000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
+            toastr["success"]("Room ID: " + room, "Room opened.")
+        }
+
+        function alertSuccesJoin(room) {
+
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": true,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "3000",
+                "hideDuration": "5000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
+            toastr["success"]("Room ID: " + room, "Room opened.")
+        }
+
+        function alertErrorJoin(room,error) {
+
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": true,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "3000",
+                "hideDuration": "5000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
+            toastr["error"](room + " not available", error)
+        }
+
+        function alertErrorOpen(room,error) {
+
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": true,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "3000",
+                "hideDuration": "5000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
+            toastr["error"](room + " not available", error)
+        }
+
+
+        var connection = new RTCMultiConnection();
+
+        var roomName;
+
+
+        // set this line to close room as soon as owner leaves
+        connection.autoCloseEntireSession = true;
+
+        // this line is VERY_important
+        connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+
+        // all below lines are optional; however recommended.
+
+        connection.session = {
+            audio: true,
+            video: true
+        };
+
+        connection.extra = {
+            name: `@ViewBag.name`,
+            unFocus: 0
+        };
+
+        connection.sdpConstraints.mandatory = {
+            OfferToReceiveAudio: true,
+            OfferToReceiveVideo: true
+        };
+
+        connection.onstream = function (event) {
+            var streamerName = event.extra.name;
+            var video = event.mediaElement;
+
+            if (event.type === 'local') {
+                document.getElementById("localCamera").appendChild(video);
+                var i = 0;
+                setInterval(checkFocus, 1000);
+                function checkFocus() {
+                    var a = document.hasFocus();
+                    if (a == false) {
+                        i++;
+                        connection.extra.unFocus = i;
+                        connection.updateExtraData();
+                    }
+                    console.log("unFocus: " + i);
+                    console.log("extraData: " + connection.extra.unFocus);
+                }
+            }
+
+            if (event.type === 'remote') {
+
+                var createDiv = document.createElement("div");
+                createDiv.setAttribute("id", streamerName + "-stream");
+                createDiv.setAttribute("class", "remoteContainer");
+
+                var createP = document.createElement("p");
+                createP.setAttribute("id", "streamerName");
+
+                var proctorScreen = document.getElementById("proctorScreen");
+                proctorScreen.appendChild(createDiv);
+
+                createDiv.appendChild(createP);
+                createDiv.appendChild(video);
+
+                createP.append(streamerName);
+
+                connection.onExtraDataUpdated = function (event) {
+                    var unFocusedName = event.extra.name;
+                    var unFocused = event.extra.unFocus;
+
+                    if (unFocused > 1) {
+
+                        var getNameStreamer = document.getElementById(unFocusedName);
+
+                        if (getNameStreamer !== null) {
+                            getNameStreamer.innerHTML = unFocusedName + " " + unFocused + " seconds unfocused";
+                        }
+                        else {
+                            var unFocusedCount = 0;
+                            var dropdownMenu = document.getElementById("dropdownForUnfocus");
+                            /*var alert = document.getElementById("bottomAlert");*/
+
+                            var createA = document.createElement("a");
+                            createA.setAttribute("class", "dropdown-item");
+                            createA.setAttribute("href", "#" + unFocusedName + "-stream");
+                            createA.setAttribute("id", unFocusedName);
+
+                            dropdownMenu.appendChild(createA);
+
+                            var unFocusedCount = document.querySelectorAll("a.dropdown-item").length;
+
+                            createA.innerHTML = unFocusedName + " " + unFocused + " seconds unfocused";
+                            document.getElementById("dropdownUnfocus").innerHTML = "Unfocus List " + "(" + unFocusedCount + ")";
+
+                            alertUnfocus(unFocusedName,unFocused);
+
+                        }
+                    }
+                };
+            }
+        };
+
+
+
+
+        connection.onstreamended = function (event) {
+            var video = document.getElementById(event.streamid);
+            if (video && video.parentNode) {
+                video.parentNode.remove();
+            }
+        };
+
+
+        function OpenOrJoin() {
+            /*this.disabled = true;*/
+            var roomTxt = document.getElementById("roomTxt").value;
+            roomName = roomTxt;
+            console.log(roomName);
+            connection.openOrJoin(roomName, function (isRoomOpened, roomid, error) {
+                if (error) {
+                    alertErrorOpen(roomName, error);
+                }
+
+                alertSuccesOpen(roomName);
+            });
+
+            if (connection.isOnline === true)
+            document.getElementById("roomStatus").textContent = 'Room ID: ' + roomName;
+        }
+
+        function Join() {
+            /* this.disabled = true; */
+            var roomTxt = document.getElementById("roomTxt").value;
+            roomName = roomTxt;
+            console.log(roomName);
+            connection.join(roomName, function (isRoomJoined, roomid, error) {
+                if (isRoomJoined === false) {
+                    alertErrorJoin(roomName, error);
+                }
+                else {
+                alertSuccesJoin(roomName);
+                }
+                });
+            document.getElementById("roomStatus").textContent = 'Room ID: ' + roomName;
+        }
+
+
+    //   function fullscreen() {
+    //   if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+    //       (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+    //       if (document.documentElement.requestFullScreen) {
+    //           document.documentElement.requestFullScreen();
+    //       } else if (document.documentElement.mozRequestFullScreen) {
+    //           document.documentElement.mozRequestFullScreen();
+    //       } else if (document.documentElement.webkitRequestFullScreen) {
+    //           document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+    //       }
+    //   } else {
+    //       if (document.cancelFullScreen) {
+    //           document.cancelFullScreen();
+    //       } else if (document.mozCancelFullScreen) {
+    //           document.mozCancelFullScreen();
+    //       } else if (document.webkitCancelFullScreen) {
+    //           document.webkitCancelFullScreen();
+    //       }
+    //   }
+    // }
+
+    //     $(document).on("keydown",function(e){
+    // 	  if(e.keyCode===122 || e.keyCode===27){
+    //       var r = confirm("Are you sure exit to exam?");
+    // if (r == true) {
+    //   window.close();
+    // } else {
+    //   return false;
+    // }
+    //     }
+    //     })
+    // ----------------------- FULL SCREEN
     </script>
 </body>
