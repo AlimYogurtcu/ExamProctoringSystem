@@ -226,7 +226,6 @@
     <Content Include="Images\logo150x150.png" />
     <Content Include="Images\webcam-setup-1.png" />
     <Content Include="Images\webcam-setup-2.png" />
-    <Content Include="Scripts\html2canvas.min.js" />
     <Content Include="Styles\main.css" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\bootstrap.js" />

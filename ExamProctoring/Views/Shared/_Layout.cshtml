@@ -88,7 +88,7 @@ connection.enableLogs = false;
 
 //  alertEnteringClose();
 //};
-        var audioMuted = true;
+var audioMuted = true;
 // bağlantı sağlandıktan sonra
 connection.onstream = function (event) {
     var streamerName = event.extra.name;
@@ -196,7 +196,8 @@ connection.onstream = function (event) {
                 }
         }
 
-        // proctor'un kendi sesini açıp kapatabilmesi için toggle button
+       // proctor'un kendi sesini açıp kapatabilmesi için toggle button
+        var audioMuted;
         var toggleVoice = document.getElementById("toggleVoice");
 
         toggleVoice.onclick = function () {
