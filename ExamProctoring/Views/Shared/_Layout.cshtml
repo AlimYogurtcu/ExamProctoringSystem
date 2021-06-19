@@ -1,42 +1,846 @@
-﻿<!DOCTYPE html>
-<html>
+﻿﻿
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+          crossorigin="anonymous" />
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+          integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+          crossorigin="anonymous" />
+
+    <link href="~/Scripts/socket.io.js" />
+    <link rel="stylesheet" href="~/Scripts/toastr.css" />
+    <link rel="stylesheet" href="~/Styles/main.css" />
+
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
+    <div>
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+        @Scripts.Render("~/bundles/jquery")
+        @RenderSection("scripts", false)
     </div>
+    @*Bildirim sesi*@
+    <audio id="notificationAudio">
+        <source src="~/audio/ding-sound-effect.mp3" type="audio/mpeg" />
+    </audio>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+            integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/&#64;tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/&#64;tensorflow-models/blazeface"></script>
+
+    <script src="~/Scripts/RTCMultiConnection.js"></script>
+    <script src="~/Scripts/RTCMultiConnectionSocket.io.js"></script>
+    <script src="~/Scripts/toastr.js"></script>
+    <script src="~/Scripts/ToastrAlerts.js"></script>
+    <script src="~/Scripts/main.js"></script>
+    <script>
+
+var connection = new RTCMultiConnection();
+
+// oda sahibi odadan çıkarsa oda kapansın diye
+connection.autoCloseEntireSession = true;
+
+connection.socketURL = "https://rtcmulticonnection.herokuapp.com:443/";
+
+connection.session = {
+    audio: true,
+    video: true,
+    data: true
+};
+connection.maxParticipantsAllowed = 100; // odada olabilecek maksimum öğrenci sayısı
+
+//function closeEntering() {
+//  connection.maxParticipantsAllowed =
+//    connection.getAllParticipants().length;
+//  console.log(connection.maxParticipantsAllowed);
+//  alertClosingEnter();
+//} // odaya girebilecek maksimum öğrenci sayısını o an ki sayıya eşitlemek için (girişi kapatmak)
+
+connection.extra = {
+    name: `@ViewBag.Name`,
+    username: `@ViewBag.Username`,
+    unFocus: 0,
+    unFocusBool: false,
+    faceDetect: 0,
+    faceDetectBool: false
+};
+
+connection.sdpConstraints.mandatory = {
+    OfferToReceiveAudio: true,
+    OfferToReceiveVideo: true,
+};
+
+connection.enableLogs = false;
+
+//connection.onRoomFull = function (roomid) { // oda full ise yapılacaklar (çalışmıyor)
+//  connection.closeSocket();
+//  connection.attachStreams.forEach(function (stream) {
+//    stream.stop();
+//  });
+
+//  alertEnteringClose();
+//};
+        var audioMuted = true;
+// bağlantı sağlandıktan sonra
+connection.onstream = function (event) {
+    var streamerName = event.extra.name;
+    var streamerUsername = event.extra.username;
+    var video = event.mediaElement;
+    video.volume = 0; // tüm streamleri sessiz başlatmak için
+    video.controls = true; // streamlerin altındaki butonları aktif etmek için
+
+    if (event.type === "local") {
+        // Face detect
+        video.setAttribute("id", "video");
+        var noiseX;
+        var noiseY;
+        var top = 10; // yukarı çıkabilececeği değer
+        var bottom = 20; // aşağı çıkabilececeği değer
+        var left = 15; // sola çıkabilececeği değer
+        var right = 15; // sağa çıkabilececeği değer
+        let hiddenVideo = document.getElementById("video");
+        let model;
+        // arka planda stream'in kurulması için
+        const setupCamera = () => {
+            navigator.mediaDevices
+                .getUserMedia({
+                    video: { width: 200, height: 200 },
+                    audio: false,
+                })
+                .then((stream) => {
+                    try {
+                        hiddenVideo.srcObject = stream;
+                    }
+                    catch (e) {
+                        // nothing
+                    }
+
+                });
+        };
+        // ilk açılışta değeri alsın diye
+        const detectFirst = async () => {
+            const prediction = await model.estimateFaces(hiddenVideo, false);
+
+            prediction.forEach((pred) => {
+                noiseX = pred.landmarks[2][0];
+                noiseY = pred.landmarks[2][1];
+            });
+        };
+        // o an ki değeri alsın diye
+        const detectFace = async () => {
+            const prediction = await model.estimateFaces(hiddenVideo, false);
+
+            prediction.forEach((pred) => {
+                    var noiseDetectedX = pred.landmarks[2][0];
+                    var noiseDetectedY = pred.landmarks[2][1];
+                    if (noiseDetectedX < noiseX - right || noiseDetectedX > noiseX + left || noiseDetectedY < noiseY - top || noiseDetectedY > noiseY + bottom) {
+                        connection.extra.faceDetect += 1;
+                        connection.extra.faceDetectBool = true;
+                        connection.updateExtraData();
+                    }
+                    else {
+                        connection.extra.faceDetectBool = false;
+                        connection.updateExtraData();
+                    }
+            });
+        };
+        setupCamera();
+        hiddenVideo.addEventListener("loadeddata", async () => {
+            model = await blazeface.load();
+            detectFirst();
+        });
+        // bir saniyede bir denetlenmesi için
+        hiddenVideo.addEventListener("loadeddata", async () => {
+            model = await blazeface.load();
+            setInterval(detectFace, 1000);
+        });
+
+
+
+        // öğrencinin sayfada olup olmamasını kontrol edebilmek için
+        setInterval(checkFocus, 1000);
+        function checkFocus() {
+            if (document.hasFocus() == false) {
+                connection.extra.unFocus += 1;
+                connection.extra.unFocusBool = true;
+                connection.updateExtraData();
+            }
+            else {
+                connection.extra.unFocusBool = false;
+                connection.updateExtraData();
+            }
+        }
+
+        // local streami div'e eklemek için
+        document.getElementById("localCamera").appendChild(video);
+    }
+
+    if (event.type === "remote") {
+        // oda da ki online sayısını proctor ekranında yazdırabilmek için
+        setInterval(checkOnlineCount, 10);
+        function checkOnlineCount() {
+            try {
+                var numberOfUsers = connection.getAllParticipants().length;
+                document.getElementById("numberOfOnlineUsers").textContent =
+                    numberOfUsers + " Online";
+            } catch (e) {
+                // nothing
+                }
+        }
+
+        // proctor'un kendi sesini açıp kapatabilmesi için toggle button
+        var toggleVoice = document.getElementById("toggleVoice");
+
+        toggleVoice.onclick = function () {
+            var localStream = connection.attachStreams[0];
+            var imgMic = document.getElementById("imgMic");
+
+            if (audioMuted == false) {
+                localStream.mute('both');
+                audioMuted = true;
+                imgMic.setAttribute("class", "fas fa-microphone-slash");
+                toggleVoice.style.backgroundColor = "red";
+                // ses kapalıysa arka plan kırmızı
+            } else {
+                localStream.unmute('both');
+                audioMuted = false;
+                imgMic.setAttribute("class", "fas fa-microphone");
+                toggleVoice.style.backgroundColor = "green";
+                // ses açıksa arka plan yeşil
+            }
+        };
+
+        // her giren kullanıcı için oluşturulan elementler ve gerekli attribute'ler
+        var onlineUsers = document.getElementById("onlineUsers");
+
+        var aOnline = document.createElement("a");
+        aOnline.setAttribute("id", streamerName + "-online");
+        aOnline.setAttribute("href", "#" + streamerName + "-stream");
+
+        var divOnline = document.createElement("div");
+        divOnline.setAttribute("class", "person my-1 p-2");
+
+        var smallOnline = document.createElement("small");
+        smallOnline.setAttribute("class", "blockquote-footer my-auto d-block");
+
+        onlineUsers.appendChild(divOnline);
+        divOnline.appendChild(aOnline);
+
+        aOnline.append(streamerName);
+
+        aOnline.appendChild(smallOnline);
+        smallOnline.append(streamerUsername);
+
+        var divRemote = document.createElement("div");
+        divRemote.setAttribute("id", streamerName + "-stream");
+        divRemote.setAttribute("class", "remoteContainer");
+
+        var pRemote = document.createElement("p");
+        pRemote.setAttribute("id", "streamerName");
+
+        var proctorScreen = document.getElementById("proctorScreen");
+        proctorScreen.appendChild(divRemote);
+
+        divRemote.appendChild(pRemote);
+        divRemote.appendChild(video);
+
+        pRemote.append(streamerName);
+
+        // güncellenen extra.data verilerine ulaşabilmek için
+        connection.onExtraDataUpdated = function (event) {
+            var nameDetection = event.extra.name;
+            var unFocused = event.extra.unFocus;
+            var faceDetected = event.extra.faceDetect;
+            var unFocusedBool = event.extra.unFocusBool;
+            var faceDetectedBool = event.extra.faceDetectBool;
+
+            if (unFocused > 0 && unFocusedBool == true) {
+                var getUnfocusList = document.getElementById(
+                    nameDetection + "-listUnfocus"
+                );
+
+                // gerekli elementler oluşturulmuşsa bir daha oluşturmayıp sadece içeriği güncellemek için
+                if (getUnfocusList !== null) {
+                    getUnfocusList.innerHTML =
+                        nameDetection + " " + unFocused + " seconds unfocused";
+                    document.getElementById("dropdownUnfocus").style.color = "unset";
+                    getUnfocusList.style.backgroundColor = "yellow";
+                    setTimeout(function () {
+                        document.getElementById("dropdownUnfocus").style.color =
+                            "white";
+                        getUnfocusList.style.backgroundColor = "white";
+                    }, 500);
+                } else {
+                    // unfocus dropdown'da parantezler için toplam sayıyı gösterebilmek için
+                    var unFocusedListCount = 0;
+                    var dropdownMenu = document.getElementById("dropdownForUnfocus");
+
+                    var aDropdown = document.createElement("a");
+                    aDropdown.setAttribute("class", "dropdown-item unfocus");
+                    aDropdown.setAttribute("href", "#" + nameDetection + "-stream");
+                    aDropdown.setAttribute("id", nameDetection + "-listUnfocus");
+
+                    dropdownMenu.appendChild(aDropdown);
+                    var unFocusedListCount =
+                        document.querySelectorAll("a.unfocus").length;
+
+                    aDropdown.innerHTML =
+                        nameDetection + " " + unFocused + " seconds unfocused";
+                    document.getElementById("dropdownUnfocus").innerHTML =
+                        "Unfocus List " + "(" + unFocusedListCount + ")";
+
+                    alertUnfocus(nameDetection);
+                }
+            }
+
+            if (faceDetected > 0 && faceDetectedBool == true) {
+                var getFaceList = document.getElementById(
+                    nameDetection + "-listFace"
+                );
+
+                // gerekli elementler oluşturulmuşsa bir daha oluşturmayıp sadece içeriği güncellemek için
+                if (getFaceList !== null) {
+                    getFaceList.innerHTML =
+                        nameDetection + " " + faceDetected + " seconds";
+                    document.getElementById("dropdownFace").style.color = "unset";
+                    getFaceList.style.backgroundColor = "yellow";
+                    setTimeout(function () {
+                        document.getElementById("dropdownFace").style.color =
+                            "white";
+                        getFaceList.style.backgroundColor = "white";
+                    }, 500);
+                } else {
+                    // face detect dropdown'da parantezler için toplam sayıyı gösterebilmek için
+                    var faceDetectedCount = 0;
+                    var dropdownMenu = document.getElementById("dropdownForFace");
+
+                    var aDropdown = document.createElement("a");
+                    aDropdown.setAttribute("class", "dropdown-item face");
+                    aDropdown.setAttribute("href", "#" + nameDetection + "-stream");
+                    aDropdown.setAttribute("id", nameDetection + "-listFace");
+
+                    dropdownMenu.appendChild(aDropdown);
+                    var faceDetectedCount =
+                        document.querySelectorAll("a.face").length;
+
+                    aDropdown.innerHTML =
+                        nameDetection + " " + faceDetected + " seconds";
+                    document.getElementById("dropdownFace").innerHTML =
+                        "Face Detect List " + "(" + faceDetectedCount + ")";
+
+                    alertFaceDetect(nameDetection);
+                }
+            }
+
+            var aUnfocus = document.getElementById(streamerName + "-listUnfocus");
+            var aFace = document.getElementById(streamerName + "-listFace");
+            var alertGo = document.getElementById(streamerName + "-alert");
+            var streamVideo = document.getElementById(streamerName + "-stream");
+
+            // unfocus dropwdown'da tıklanılan kullancının stream'ine border eklemek için
+            if (aUnfocus != null) {
+                aUnfocus.onclick = function () {
+                    streamVideo.style.border = "2px solid blue";
+                    setTimeout(function () {
+                        streamVideo.style.border = "unset";
+                    }, 2000);
+                };
+            }
+            // face list dropwdown'da tıklanılan kullancının stream'ine border eklemek için
+            if (aFace != null) {
+                aFace.onclick = function () {
+                    streamVideo.style.border = "2px solid blue";
+                    setTimeout(function () {
+                        streamVideo.style.border = "unset";
+                    }, 2000);
+                };
+            }
+            // alert'te tıklanılan kullancının stream'ine border eklemek için
+            if (alertGo != null) {
+                alertGo.onclick = function () {
+                    streamVideo.style.border = "2px solid blue";
+                    setTimeout(function () {
+                        streamVideo.style.border = "unset";
+                    }, 2000);
+                };
+            }
+        };
+
+        var aOnline = document.getElementById(streamerName + "-online");
+        // online öğrenciler de tıklanılan kullancının stream'ine border eklemek için
+        if (aOnline != null) {
+            aOnline.onclick = function () {
+                event.mediaElement.style.border = "2px solid blue";
+                setTimeout(function () {
+                    event.mediaElement.style.border = "unset";
+                }, 2000);
+            };
+        }
+
+        // odadan çıkan olursa proctor'a verilen alert'te isim ve saatini yazdırmak için
+        connection.onleave = function (event) {
+            var dt = new Date();
+            var time =
+                ("0" + dt.getHours()).slice(-2) +
+                ":" +
+                ("0" + dt.getMinutes()).slice(-2) +
+                ":" +
+                ("0" + dt.getSeconds()).slice(-2);
+
+            alertLeave(event.extra.name, time);
+        };
+
+        // odaya giren olursa proctor'a verilen alert'te isim ve saatini yazdırmak için
+        var dt = new Date();
+        var time =
+            ("0" + dt.getHours()).slice(-2) +
+            ":" +
+            ("0" + dt.getMinutes()).slice(-2) +
+            ":" +
+            ("0" + dt.getSeconds()).slice(-2);
+
+        alertEntering(streamerName, time);
+    }
+};
+
+//Textarea'da Shift+Enter yeni satır oluşturması, sadece Enter'a basılırsa mesaj gönderilsin diye
+$("#textareaMessage").keydown(function (e) {
+    if (e.keyCode == 13 && !e.shiftKey) {
+        sendMessage();
+        e.preventDefault();
+    }
+    if (e.keyCode == 13 && e.shiftKey) {
+        e.preventDefault();
+    }
+
+});
+
+//Roompassword'da Enter'a basılırsa giriş yapılsın diye
+$("#roomPassword").keydown(function (e) {
+    if (e.keyCode == 13) {
+            document.getElementById("btnRoom").click();
+    }
+});
+
+// textarea boş işe görmesin doluysa göndersin diye
+function sendMessage(e) {
+    if (document.getElementById("textareaMessage").value.length > 0) {
+        var name = connection.extra.name;
+
+        connection.send({
+            message: document.getElementById("textareaMessage").value,
+            sender: name,
+        });
+
+        appendMsg(event);
+        document.getElementById("textareaMessage").value = "";
+    }
+}
+// mesajın gönderilen saati
+        function appendMsg(event) {
+            var dt = new Date();
+            var time =
+                ("0" + dt.getHours()).slice(-2) +
+                ":" +
+                ("0" + dt.getMinutes()).slice(-2) +
+                ":" +
+                ("0" + dt.getSeconds()).slice(-2);
+
+            try {
+                // mesajı karşı tarafa göndersin diye
+                var chatMsgGroup = document.getElementById("chat-message-group");
+                $(chatMsgGroup).append(
+                    `<div class="card">
+                   <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-mute text-left"> ` +
+                    event.data.sender +
+                    `
+            </h6>
+                        <p class="card-text float-left">` +
+                    event.data.message +
+                    `<small class="float-end mt-2">` +
+                    time +
+                    `</small>
+                        </p>
+                    </div>
+                </div>`
+                );
+
+                notification(); //Yeni mesaj gelince bildirim sesinin çalması için
+            } catch (e) {
+                if (e) {
+                    // mesajı gönderenin ekranında yazdırsın diye
+                    var message = document.getElementById("textareaMessage").value;
+
+                    var chatMsgGroup = document.getElementById("chat-message-group");
+                    $(chatMsgGroup).append(
+                        `<div class="card" style="background-color:antiquewhite;">
+                   <div class="card-body">
+                        <h6 id="` +
+                        connection.extra.name +
+                        `-chat" class="card-subtitle mb-2 text-mute text-left"> ` +
+                        connection.extra.name +
+                        `
+            </h6>
+                        <p class="card-text float-left">` +
+                        message +
+                        `<small class="float-end mt-2">` +
+                        time +
+                        `</small>
+                        </p>
+                    </div>
+                </div>`
+                    );
+                }
+            } finally {
+                $("div#messagesContainer").scrollTop(
+                    $("div#messagesContainer")[0].scrollHeight
+                ); //Scroll yeni mesaj gelince otomatik aşağı insin diye
+            }
+        }
+
+// bağlantıda gönderilmiş mesaj varsa
+connection.onmessage = appendMsg;
+
+// bağlantı kesilirse gerekli elementleri silmek için
+connection.onstreamended = function (event) {
+    var video = document.getElementById(event.streamid);
+    var divStreamerName = document.getElementById(
+        event.extra.name + "-online"
+    );
+    var localCamera = document.getElementById("localCamera");
+    if (video && video.parentNode) {
+        video.parentNode.remove();
+    }
+    try {
+        divStreamerName.parentNode.remove();
+        localCamera.remove();
+    } catch (e) {
+        // nothing
+    }
+};
+
+function closeRoom() {
+    // tüm kullanıcılarla bağlantının kesilmesi için
+    connection.getAllParticipants().forEach(function (pid) {
+        connection.disconnectWith(pid);
+    });
+
+    // tüm remote stream'leri durdurmak için
+    connection.attachStreams.forEach(function (remoteStream) {
+        remoteStream.stop();
+    });
+
+    // tüm local stream'leri durdurmak için
+    connection.attachStreams.forEach(function (localStream) {
+        localStream.stop();
+    });
+
+    // kamera ve microfonun bağlantısını kesmek için
+    connection.dontCaptureUserMedia = true;
+
+    try {
+        document.getElementById("localCamera").remove();
+    } catch (e) {
+        // nothing
+    }
+
+    // socket.io kapatmak için
+    connection.closeSocket();
+    // bağlantıyı kapatmak için
+    connection.close();
+}
+
+function leaveRoom() {
+
+    document.exitFullscreen();
+
+    setTimeout(function () {
+        window.open("Login", "_self");
+    }, 1000);
+}
+// proctor odayı açabilmesi için
+function openRoom() {
+    var roomName = document.getElementById("roomID").value;
+    // şifrenin yazılıp yazılmadığını kontrol etmek için
+    var password = document.getElementById("roomPassword").value;
+    if (!password || !password.length) {
+        var error = "Please enter a valid password.";
+        var title = password + ` not valid`;
+        alertError(title, error);
+        document.getElementById("roomPassword").value = "";
+        return;
+    }
+
+    connection.password = password;
+
+    // odanın açılması için
+    connection.open(roomName, function (isRoomOpened, roomid, error) {
+        // olabilecekler alert'leri verebilmek için
+        if (error) {
+            if (error === "Room not available") {
+                //var title =
+                //    "Someone already created this room. Please either join or create a separate room.";
+                //alertError(error, title);
+                //return;
+
+                let alreadyOpenRoomJoin = confirm("Someone already created this room. Are you want the joining?");
+
+                if (alreadyOpenRoomJoin == true) {
+                    connection.join(roomName, function (isJoinedRoom, roomid, error) {
+                        if (isJoinedRoom === false) {
+                            alertError("You can't joined", error);
+                            return;
+                        }
+                        else {
+                            document.getElementById("body-proctor").style.visibility = "visible";
+
+                            document.getElementById("btnRoom").style.visibility = "hidden";
+                            document.getElementById("roomID").style.visibility = "hidden";
+                            document.getElementById("roomPassword").style.visibility = "hidden";
+
+                            document.getElementById("btnRoom").style.display = "none";
+                            document.getElementById("roomID").style.display = "none";
+                            document.getElementById("roomPassword").style.display = "none";
+
+                            document.getElementById("btnClose").style.visibility = "visible";
+                            document.getElementById("btnClose").style.display = "unset";
+
+                            var divRoom = document.getElementById("divRoom");
+                            divRoom.style.border = "unset";
+                            divRoom.style.margin = "unset";
+                            divRoom.style.padding = "unset";
+                            divRoom.style.top = "unset";
+                            divRoom.style.left = "unset";
+                            divRoom.style.visibility = "unset";
+
+                            divRoom.style.position = "absolute";
+                            divRoom.style.top = "1%";
+                            divRoom.style.right = "2%";
+                            divRoom.style.display = "block";
+
+                            alertSucces(roomName);
+                        }
+                    });
+                }
+                else if (alreadyOpenRoomJoin == false) {
+                    document.getElementById("roomID").value = "";
+                    document.getElementById("roomPassword").value = "";
+                    return;
+                }
+
+            }
+
+            var title = "Room not available.";
+            alertError(title, error);
+        }
+
+        // görülebilir veya gizlenecekler elementler
+        document.getElementById("body-proctor").style.visibility = "visible";
+
+        document.getElementById("btnRoom").style.visibility = "hidden";
+        document.getElementById("roomID").style.visibility = "hidden";
+        document.getElementById("roomPassword").style.visibility = "hidden";
+
+        document.getElementById("btnRoom").style.display = "none";
+        document.getElementById("roomID").style.display = "none";
+        document.getElementById("roomPassword").style.display = "none";
+
+        document.getElementById("btnClose").style.visibility = "visible";
+        document.getElementById("btnClose").style.display = "unset";
+
+        var divRoom = document.getElementById("divRoom");
+        divRoom.style.border = "unset";
+        divRoom.style.margin = "unset";
+        divRoom.style.padding = "unset";
+        divRoom.style.top = "unset";
+        divRoom.style.left = "unset";
+        divRoom.style.visibility = "unset";
+
+        divRoom.style.position = "absolute";
+        divRoom.style.top = "1%";
+        divRoom.style.right = "2%";
+        divRoom.style.display = "block";
+
+        alertSucces(roomName);
+    });
+
+    // oda ismini ana ekrana yazdırmak için
+    if (connection.isOnline === true) {
+        document.getElementById("mainCol").textContent = roomName;
+        // oda bilgilerini kopyalayabilinmesi için görülemez bir p elementine oda ismini ve şifresini yazdırmak için
+        document.getElementById("roomDetails").textContent =
+            "Room Name: " + roomName + "\n" + "Room Password: " + password;
+    }
+}
+
+// öğrenci odaya girebilmesi için
+function joinRoom(event) {
+    var roomName = document.getElementById("roomID").value;
+    // şifrenin yazılıp yazılmadığını kontrol etmek için
+    var password = document.getElementById("roomPassword").value;
+    if (!password || !password.length) {
+        document.getElementById("roomPassword").value = "";
+        var error = "Please enter a valid password.";
+        var title = password + ` not valid`;
+        alertError(title, error);
+        return;
+    }
+
+    connection.password = password;
+
+    // odaya girsin diye
+    connection.join(roomName, function (isJoinedRoom, roomid, error) {
+        // olabilecekler alert'leri verebilmek için
+        if (error) {
+            document.getElementById("roomID").value = "";
+            document.getElementById("roomPassword").value = "";
+            if (error === "Invalid password") {
+                var title = password + ` not correct`;
+                alertError(error, title);
+                if (!password || !password.length) {
+                    alert(error);
+                    return;
+                }
+                connection.password = password;
+                return;
+            }
+            if (error === "Room not available") {
+                var title =
+                    "This room does not exist. Please either create it or wait for moderator to enter in the room.";
+                alertError(error, title);
+                return;
+            }
+            //if (error === "Room full") {
+            //    alertEnteringClose();
+            //    return;
+            //}
+            var title = "Room not available.";
+            alertError(title, error);
+            return;
+        }
+
+        // odaya giriş yapılabiliyor mu yapılamıyor diye kontrol etmek için "try"
+        try {
+        //    connection.onopen = function (event) { // oda full ise veya giriş kapalıysa girememesi için "connection.onopen" içinde
+                document.getElementById("body-exam").style.visibility = "visible";
+
+                document.getElementById("btnRoom").style.visibility = "hidden";
+                document.getElementById("roomID").style.visibility = "hidden";
+                document.getElementById("roomPassword").style.visibility = "hidden";
+
+                document.getElementById("btnRoom").style.display = "none";
+                document.getElementById("roomID").style.display = "none";
+                document.getElementById("roomPassword").style.display = "none";
+
+                document.getElementById("btnLeave").style.visibility = "visible";
+                document.getElementById("btnLeave").style.display = "unset";
+
+                document.getElementById("rules").remove();
+
+
+                var divRoom = document.getElementById("divRoom");
+                divRoom.style.border = "unset";
+                divRoom.style.margin = "unset";
+                divRoom.style.padding = "unset";
+                divRoom.style.top = "unset";
+                divRoom.style.left = "unset";
+                divRoom.style.visibility = "unset";
+
+                divRoom.style.position = "absolute";
+                divRoom.style.top = "1%";
+                divRoom.style.right = "2%";
+                divRoom.style.display = "block";
+
+                document.getElementById("mainCol").textContent = roomName;
+
+                    try {
+                        fullscreen();
+                    }
+                    catch (e) {
+                        // nothing
+                    }
+
+                alertSucces(roomName);
+
+                // oda hala açık mı diye kontrol ediyor
+                (function checkRoom() {
+                        connection.checkPresence(
+                        roomName,
+                        function (isRoomExist, roomid, error) {
+                            // oda kapanınca
+                            if (isRoomExist === false) {
+                                alertRoomClosed();
+                                // tüm kullanıcılarla bağlantıyı kesiyor
+                                connection.getAllParticipants().forEach(function (pid) {
+                                    connection.disconnectWith(pid);
+                                });
+
+                                // remote stream'leri durduruyor
+                                connection.attachStreams.forEach(function (remoteStream) {
+                                    remoteStream.stop();
+                                });
+
+                                // local stream'leri durduruyor
+                                connection.attachStreams.forEach(function (localStream) {
+                                    localStream.stop();
+                                });
+
+                                connection.dontCaptureUserMedia = true;
+
+                                // socket.io bağlantısını kapatıyor
+                                connection.closeSocket();
+                                // bağlantıyı kesiyor
+                                connection.close();
+
+                                document.exitFullscreen();
+
+                                setTimeout(function () {
+                                    window.open("Login", "_self");
+                                }, 1000);
+
+                                return;
+                            }
+
+                            setTimeout(checkRoom, 1000); // 1 saniyede bir kontrol ediyor odanın hala açık olup olmamasını
+                        }
+                    );
+                })();
+            /*};*/
+        } catch (e) {
+                //alertEnteringClose(); // oda full veya giriş kapalıysa girişin kapalı olduğu alertini versin diye
+                    }
+    });
+        }
+
+        function fullscreen() {
+            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+                (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+                if (document.documentElement.requestFullScreen) {
+                    document.documentElement.requestFullScreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullScreen) {
+                    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
+            } else {
+                if (document.cancelFullScreen) {
+                    document.cancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                }
+            }
+        }
+    </script>
+
 </body>
-</html>

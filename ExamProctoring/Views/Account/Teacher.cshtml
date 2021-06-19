@@ -1,6 +1,6 @@
 ﻿@{
-    ViewBag.Title = "Teacher";
-    Layout = "~/Views/_LayoutPage1.cshtml";
+    ViewBag.Title = "E-Proctoring - Proctoring";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <body id="body-proctor" class="bg-light preload" style="height: 100%;">
 
@@ -95,10 +95,10 @@
             </div>
             <div id="divRoom">
                 <span>
-                    <textarea id="roomID" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room ID" autofocus required></textarea>
-                    <textarea id="roomPassword" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room Password" required></textarea>
-                    <button id="btnRoom" class="btn btn-sm" onclick="openRoom();">Open and Join Room</button>
-                    <button id="btnClose" class="btn btn-sm" onclick="leaveRoom();"><i class="far fa-times-circle fa-2x"></i></button>
+                    <textarea id="roomID" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room Name" autofocus tabindex="1"></textarea>
+                    <textarea id="roomPassword" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room Password" tabindex="2"></textarea>
+                    <button id="btnRoom" class="btn btn-sm" onclick="openRoom();" tabindex="3">Open and Join Room</button>
+                    <button id="btnClose" onclick="closeRoom();"><i class="far fa-times-circle fa-2x"></i></button>
                 </span>
             </div>
             <div class="

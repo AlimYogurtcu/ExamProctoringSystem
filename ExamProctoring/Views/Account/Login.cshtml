@@ -1,18 +1,25 @@
-﻿
-@{
-    ViewBag.Title = "Login";
-    Layout = "~/Views/_LayoutPage1.cshtml";
+﻿@{
+    ViewBag.Title = "E-Proctoring - Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@if (Session["user"] == null)
+@if (Session["user"] == null) 
 {
-    <body id="login" class="bg-light overflow-hidden">
+    <body id="login" class="bg-light overflow-hidden noprint" oncontextmenu="return false">
         <div class="modal fade" id="signinModal" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <img class="mx-auto" src="https://via.placeholder.com/100" alt="" />
+                        <img class="mx-auto" src="~/Images/logo150x150.png" alt="" style="width:150px;height:150px;"/>
                     </div>
                     <div class="modal-body">
+                                @if(@ViewBag.errorMessage != null)
+                                {
+                                    <strong style="color:red;">@ViewBag.errorMessage</strong>
+                                }
+                                else
+                                {
+                                    //doNothing
+                                }
                         @using (Html.BeginForm("ExamPage", "", FormMethod.Post))
                         {
                             <label for="inputName" class="visually-hidden">User Name</label>
@@ -21,6 +28,7 @@
                                    name="account_username"
                                    class="form-control mb-2"
                                    placeholder="User Name"
+                                   tabindex="1"
                                    required
                                    autofocus />
                             <label for="inputPassword" class="visually-hidden">Password</label>
@@ -29,12 +37,22 @@
                                    name="account_password"
                                    class="form-control"
                                    placeholder="Password"
+                                   tabindex="2"
                                    required>
                             <div class="mt-3">
                                 <button class="btn btn-sm btn-outline-primary float-end mt-2"
-                                        type="submit">
+                                        type="submit"
+                                        tabindex="3">
                                     Sign in
                                 </button>
+                                <ul>
+                                    <li>
+                                        <a href="https://go.microsoft.com/fwlink/p/?LinkId=2124703">WebView2 Runtime</a><br />
+                                    </li>
+                                    <li>
+                                        <a href="~/Downloads/E-Proctoring.zip">Application</a>
+                                    </li>
+                                </ul>
                             </div>
                         }
                     </div>

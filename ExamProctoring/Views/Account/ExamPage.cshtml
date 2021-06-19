@@ -1,14 +1,17 @@
-﻿@{ ViewBag.Title = "ExamPage"; Layout = "~/Views/_LayoutPage1.cshtml"; }
-<body id="body-exam" class="bg-light preload" style="height: 100%">
+﻿@{ 
+    ViewBag.Title = "E-Proctoring - Exam"; 
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+<body id="body-exam" oncontextmenu="return false" class="bg-light preload" style="height: 100%">
     <div class="row py-2 mb-auto mt-1 mx-2 border border-dark rounded-2 shadow"
          id="mainScreen">
         <div class="row col-4 px-3 border-right border-dark">
             <!--<div class="col-4 h-auto">
-        <h3 class="text-center">Kişiler</h3><br />
-        <hr />
-        <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
-             style="overflow-y: scroll; height: 90vh">
-        </div>-->
+            <h3 class="text-center">Kişiler</h3><br />
+            <hr />
+            <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
+                 style="overflow-y: scroll; height: 90vh">
+            </div>-->
             <!-- kişiler -->
             <!--</div>-->
             <div>
@@ -41,47 +44,44 @@
         </div>
         <div class="col-8">
             <h3 id="mainCol" class="text-center">Sınav Ekranı</h3>
-            <div id="divRoom">
+            <div id="divRoom" style="top:5%; left:35%;">
+                <div id="rules">
+                    <img src="~/Images/webcam-setup-2.png" style="width:500px; height:250px;" /> <br />
+                    <strong> Rules </strong>
+                    <ol>
+                        <li>Get in an exam position before entering the room.</li>
+                        <li>Keep your face in front of the webcam.</li>
+                        <li>Do not play with the angle of the webcam after entering the room.</li>
+                        <li>Do not leave the full screen until the exam is over.</li>
+                    </ol>
+                </div>
                 <span>
                     <textarea id="roomID"
                               cols="20"
                               rows="1"
+                              tabindex="1"
                               style="overflow: hidden; resize: none"
-                              placeholder="Room ID" autofocus required></textarea>
+                              placeholder="Room Name" autofocus></textarea>
                     <textarea id="roomPassword"
                               cols="20"
                               rows="1"
+                              tabindex="2"
                               style="overflow: hidden; resize: none"
-                              placeholder="Room Password" required></textarea>
-                    <button id="btnRoom" class="btn btn-sm" onclick="joinRoom();">
+                              placeholder="Room Password"></textarea>
+                    <button id="btnRoom" class="btn btn-sm" onclick="joinRoom();" tabindex="3">
                         Join Room
                     </button>
-                    <button id="btnLeave" class="btn btn-sm" onclick="leaveRoom();">
+                    <button id="btnLeave" onclick="leaveRoom();">
                         <i class="far fa-times-circle fa-2x"></i>
                     </button>
 
                 </span>
-                <div id="backgroundApps">
-                    <strong>Following processes are closed:</strong>
-                    <ul>
-                        @try
-                        {
-                            foreach (var name in Model.processes)
-                            {
-                                <li>@name</li>
-                            }
-
-                        }
-                        catch
-                        { //do nothing
-                        }
-                    </ul>
-                </div>
                 <div><small id="roomStatus" class="text-center"></small></div>
             </div>
-            <div class="px-3"
+            <div class="px-3 scrollbar-deep-purple bordered-deep-purple thin"
                  id="examScreen"
-                 style="height: 95vh; margin-top:1vh;">
+                 style="height:90vh; margin-top:50px; overflow-x:scroll; overflow-y:scroll;">
+                <img src="~/Images/exam.png" />
                 <div id="localCamera"></div>
             </div>
         </div>
