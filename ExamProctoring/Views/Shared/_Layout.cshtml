@@ -88,11 +88,21 @@ connection.enableLogs = false;
 
 //  alertEnteringClose();
 //};
-var audioMuted = true;
+
+// toogle button'dan sonra console'da null hatası için
+connection.onmute = function(event) {
+    event.mediaElement.pause();
+};
+
+connection.onunmute = function(event) {
+     event.mediaElement.play();
+};
+
 // bağlantı sağlandıktan sonra
 connection.onstream = function (event) {
     var streamerName = event.extra.name;
     var streamerUsername = event.extra.username;
+    var audioMuted = true;
     var video = event.mediaElement;
     video.volume = 0; // tüm streamleri sessiz başlatmak için
     video.controls = true; // streamlerin altındaki butonları aktif etmek için
@@ -197,7 +207,6 @@ connection.onstream = function (event) {
         }
 
        // proctor'un kendi sesini açıp kapatabilmesi için toggle button
-        var audioMuted;
         var toggleVoice = document.getElementById("toggleVoice");
 
         toggleVoice.onclick = function () {
@@ -271,7 +280,7 @@ connection.onstream = function (event) {
                 // gerekli elementler oluşturulmuşsa bir daha oluşturmayıp sadece içeriği güncellemek için
                 if (getUnfocusList !== null) {
                     getUnfocusList.innerHTML =
-                        nameDetection + " " + unFocused + " seconds unfocused";
+                        nameDetection + " " + unFocused + " seconds";
                     document.getElementById("dropdownUnfocus").style.color = "unset";
                     getUnfocusList.style.backgroundColor = "yellow";
                     setTimeout(function () {
@@ -588,20 +597,25 @@ function openRoom() {
         // olabilecekler alert'leri verebilmek için
         if (error) {
             if (error === "Room not available") {
-                //var title =
-                //    "Someone already created this room. Please either join or create a separate room.";
-                //alertError(error, title);
-                //return;
-
                 let alreadyOpenRoomJoin = confirm("Someone already created this room. Are you want the joining?");
 
-                if (alreadyOpenRoomJoin == true) {
-                    connection.join(roomName, function (isJoinedRoom, roomid, error) {
-                        if (isJoinedRoom === false) {
-                            alertError("You can't joined", error);
-                            return;
-                        }
-                        else {
+                if (alreadyOpenRoomJoin === true) {
+                    if (!password || !password.length) {
+                        var error = "Please enter a valid password.";
+                        var title = "This password: (" + password + `) not valid`;
+                        alertError(title, error);
+                        document.getElementById("roomPassword").value = "";
+                        return;
+                    }
+                    else {
+
+                        connection.password = password;
+
+                        connection.join(roomName, function (isJoinedRoom, roomid, error) {
+                            if (isJoinedRoom === false) {
+                                alertError("You can't joined", error);
+                                return;
+                            }
                             document.getElementById("body-proctor").style.visibility = "visible";
 
                             document.getElementById("btnRoom").style.visibility = "hidden";
@@ -629,21 +643,18 @@ function openRoom() {
                             divRoom.style.display = "block";
 
                             alertSucces(roomName);
-                        }
-                    });
+                        });
+                    }
                 }
-                else if (alreadyOpenRoomJoin == false) {
-                    document.getElementById("roomID").value = "";
-                    document.getElementById("roomPassword").value = "";
+
+                else {
+                    var title = "You not join to already opened room";
+                    alertError(title, error);
                     return;
                 }
-
             }
-
-            var title = "Room not available.";
-            alertError(title, error);
         }
-
+        else {
         // görülebilir veya gizlenecekler elementler
         document.getElementById("body-proctor").style.visibility = "visible";
 
@@ -672,15 +683,13 @@ function openRoom() {
         divRoom.style.display = "block";
 
         alertSucces(roomName);
-    });
 
-    // oda ismini ana ekrana yazdırmak için
-    if (connection.isOnline === true) {
+        // oda ismini ana ekrana yazdırmak için
         document.getElementById("mainCol").textContent = roomName;
         // oda bilgilerini kopyalayabilinmesi için görülemez bir p elementine oda ismini ve şifresini yazdırmak için
         document.getElementById("roomDetails").textContent =
-            "Room Name: " + roomName + "\n" + "Room Password: " + password;
-    }
+            "Room Name: " + roomName + "\n" + "Room Password: " + password;}
+    });
 }
 
 // öğrenci odaya girebilmesi için
