@@ -19,12 +19,12 @@
 
     toastr["error"](
         name +
-        ` now unfocus! <br /><br /><a id="` +
+        ` now! <br /><br /><a id="` +
         name +
         `-alert" class="btn clear" href="#` +
         name +
         `-stream"> Go </a >`,
-        "UNFOCUSED"
+        "Unfocused Detect"
     );
 }
 

@@ -242,7 +242,6 @@ connection.onstream = function (event) {
         smallOnline.setAttribute("class", "blockquote-footer my-auto d-block");
 
         onlineUsers.appendChild(divOnline);
-        divOnline.appendChild(aOnline);
 
         aOnline.append(streamerName);
 
@@ -257,12 +256,19 @@ connection.onstream = function (event) {
         pRemote.setAttribute("id", "streamerName");
 
         var proctorScreen = document.getElementById("proctorScreen");
-        proctorScreen.appendChild(divRemote);
 
-        divRemote.appendChild(pRemote);
-        divRemote.appendChild(video);
+        // (safari) remote videoda çift ekranın önüne geçebilmek için
+        if (document.getElementById(video.id)) {
+            return;
+        }
+        else {
+            proctorScreen.appendChild(divRemote);
+            divRemote.appendChild(pRemote);
+            divRemote.appendChild(video);
+            pRemote.append(streamerName);
 
-        pRemote.append(streamerName);
+            divOnline.appendChild(aOnline);
+        }
 
         // güncellenen extra.data verilerine ulaşabilmek için
         connection.onExtraDataUpdated = function (event) {
@@ -303,7 +309,7 @@ connection.onstream = function (event) {
                         document.querySelectorAll("a.unfocus").length;
 
                     aDropdown.innerHTML =
-                        nameDetection + " " + unFocused + " seconds unfocused";
+                        nameDetection + " " + unFocused + " seconds ";
                     document.getElementById("dropdownUnfocus").innerHTML =
                         "Unfocus List " + "(" + unFocusedListCount + ")";
 
