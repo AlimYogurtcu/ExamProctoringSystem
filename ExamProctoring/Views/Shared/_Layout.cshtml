@@ -103,6 +103,7 @@ connection.onstream = function (event) {
     var streamerName = event.extra.name;
     var streamerUsername = event.extra.username;
     var audioMuted = true;
+    var isOpened = false;
     var video = event.mediaElement;
     video.volume = 0; // tüm streamleri sessiz başlatmak için
     video.controls = true; // streamlerin altındaki butonları aktif etmek için
@@ -691,7 +692,7 @@ function openRoom() {
         alertSucces(roomName);
 
         // oda ismini ana ekrana yazdırmak için
-        document.getElementById("mainCol").textContent = roomName;
+        document.getElementById("nameRoom").textContent = roomName;
         // oda bilgilerini kopyalayabilinmesi için görülemez bir p elementine oda ismini ve şifresini yazdırmak için
         document.getElementById("roomDetails").textContent =
             "Room Name: " + roomName + "\n" + "Room Password: " + password;}
@@ -776,7 +777,7 @@ function joinRoom(event) {
                 divRoom.style.right = "2%";
                 divRoom.style.display = "block";
 
-                document.getElementById("mainCol").textContent = roomName;
+                document.getElementById("nameRoom").textContent = roomName;
 
                     try {
                         fullscreen();
