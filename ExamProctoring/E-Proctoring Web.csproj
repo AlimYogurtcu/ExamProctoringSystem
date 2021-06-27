@@ -262,7 +262,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\test.cshtml" />
     <Content Include="Views\Account\ExamPage.cshtml" />
     <Content Include="Views\Account\Teacher.cshtml" />
     <Content Include="Scripts\toastr.js.map" />
