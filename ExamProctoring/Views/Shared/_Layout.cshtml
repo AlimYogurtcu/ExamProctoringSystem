@@ -650,6 +650,12 @@ function openRoom() {
                             divRoom.style.display = "block";
 
                             alertSucces(roomName);
+
+            				// oda ismini ana ekrana yazdırmak için
+            				document.getElementById("nameRoom").textContent = roomName;
+            				// oda bilgilerini kopyalayabilinmesi için görülemez bir p elementine oda ismini ve şifresini yazdırmak için
+            				document.getElementById("roomDetails").textContent =
+            				"Room Name: " + roomName + "\n" + "Room Password: " + password;
                         });
                     }
                 }
