@@ -7,15 +7,15 @@
          id="mainScreen">
         <div class="row col-4 px-3 border-right border-dark">
             <!--<div class="col-4 h-auto">
-            <h3 class="text-center">Kişiler</h3><br />
-            <hr />
-            <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
-                 style="overflow-y: scroll; height: 90vh">
-            </div>-->
+        <h3 class="text-center">Kişiler</h3><br />
+        <hr />
+        <div class="border-dark border-right scrollbar-deep-purple bordered-deep-purple thin"
+             style="overflow-y: scroll; height: 90vh">
+        </div>-->
             <!-- kişiler -->
             <!--</div>-->
             <div>
-                <h3 class="text-center">Chat</h3>
+                <h3 class="text-center">Chat / <button id="fileButton" class="textButton">Send Image</button></h3>
                 <hr />
                 <div class="scrollbar-deep-purple bordered-deep-purple thin"
                      style="overflow-y: scroll; height: 80vh"
@@ -60,7 +60,8 @@
                               cols="20"
                               rows="1"
                               tabindex="1"
-                              style="overflow: hidden; resize: none"
+                              style="overflow: hidden; resize: none;"
+                              oninput="this.value = this.value.toLowerCase()"
                               placeholder="Room Name" autofocus></textarea>
                     <textarea id="roomPassword"
                               cols="20"
@@ -88,5 +89,8 @@
         <!-- sınav/gözetmen -->
         <video id="video" style="visibility:hidden; display:none;" autoplay></video>
         <canvas id="canvas" style="visibility: hidden; display: none;"></canvas>
+        <div class="chat-group" id="image-message-group" style="visibility: hidden; display: none;">
+            <!-- Image -->
+        </div>
     </div>
 </body>

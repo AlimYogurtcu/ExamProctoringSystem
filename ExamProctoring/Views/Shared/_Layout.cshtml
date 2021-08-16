@@ -41,7 +41,25 @@
     <script src="~/Scripts/toastr.js"></script>
     <script src="~/Scripts/ToastrAlerts.js"></script>
     <script src="~/Scripts/main.js"></script>
+    <script src="~/Scripts/FileBufferReader.js"></script>
     <script>
+
+
+        //function registerModalShow() {
+        //    document.getElementById("signinModal").style.display = "none";
+        //    document.getElementById("signinModal").setAttribute("class", "");
+
+        //    document.getElementById("registerModal").style.display = "block";
+        //    document.getElementById("registerModal").setAttribute("class", "modal fade show");
+        //}
+
+        //function signinModalShow() {
+        //    document.getElementById("registerModal").style.display = "none";
+        //    document.getElementById("registerModal").setAttribute("class", "");
+
+        //    document.getElementById("signinModal").style.display = "block";
+        //    document.getElementById("signinModal").setAttribute("class", "modal fade show");
+        //}
 
 var connection = new RTCMultiConnection();
 
@@ -55,6 +73,9 @@ connection.session = {
     video: true,
     data: true
 };
+
+ connection.enableFileSharing = true;
+
 connection.maxParticipantsAllowed = 100; // odada olabilecek maksimum öğrenci sayısı
 
 //function closeEntering() {
@@ -78,7 +99,29 @@ connection.sdpConstraints.mandatory = {
     OfferToReceiveVideo: true,
 };
 
-connection.enableLogs = false;
+connection.enableLogs = true;
+
+//connection.candidates = {
+//    turn: true, // relay:true or turn:true
+//    stun: true
+//};
+
+//connection.iceTransportPolicy = 'relay';
+
+// first step, ignore default STUN+TURN servers
+connection.iceServers = [];
+
+// second step, set STUN url
+connection.iceServers.push({
+    urls: 'stun.voxgratia.org'
+});
+
+// last step, set TURN url (recommended)
+connection.iceServers.push({
+    url: 'turn:192.158.29.39:3478?transport=tcp',
+    credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+    username: '28224511:1379330808'
+});
 
 //connection.onRoomFull = function (roomid) { // oda full ise yapılacaklar (çalışmıyor)
 //  connection.closeSocket();
@@ -192,10 +235,20 @@ connection.onstream = function (event) {
 
         // local streami div'e eklemek için
         document.getElementById("localCamera").appendChild(video);
+
+        // fotoğraf gönderebilmek için
+        document.getElementById('fileButton').onclick = function () {
+            var fileSelector = new FileSelector();
+            fileSelector.accept = '.png, .jpg, .jpeg';
+            fileSelector.selectSingleFile(function (file) {
+                connection.send(file);
+            });
+        };
     }
 
     if (event.type === "remote") {
-        // oda da ki online sayısını proctor ekranında yazdırabilmek için
+
+        // odadaki online sayısını proctor ekranında yazdırabilmek için
         setInterval(checkOnlineCount, 10);
         function checkOnlineCount() {
             try {
@@ -253,8 +306,10 @@ connection.onstream = function (event) {
         divRemote.setAttribute("id", streamerName + "-stream");
         divRemote.setAttribute("class", "remoteContainer");
 
-        var pRemote = document.createElement("p");
-        pRemote.setAttribute("id", "streamerName");
+        var aRemote = document.createElement("a");
+        aRemote.setAttribute("id", "streamerName");
+        aRemote.setAttribute("href", "../uploads/" + streamerUsername + ".jpeg");
+        aRemote.setAttribute("onclick", "window.open('../uploads/" + streamerUsername + ".jpeg','newwindow', 'width=600,height=500'); return false;");
 
         var proctorScreen = document.getElementById("proctorScreen");
 
@@ -264,9 +319,9 @@ connection.onstream = function (event) {
         }
         else {
             proctorScreen.appendChild(divRemote);
-            divRemote.appendChild(pRemote);
+            divRemote.appendChild(aRemote);
             divRemote.appendChild(video);
-            pRemote.append(streamerName);
+            aRemote.append(streamerName);
 
             divOnline.appendChild(aOnline);
         }
@@ -286,6 +341,7 @@ connection.onstream = function (event) {
 
                 // gerekli elementler oluşturulmuşsa bir daha oluşturmayıp sadece içeriği güncellemek için
                 if (getUnfocusList !== null) {
+
                     getUnfocusList.innerHTML =
                         nameDetection + " " + unFocused + " seconds";
                     document.getElementById("dropdownUnfocus").style.color = "unset";
@@ -295,6 +351,7 @@ connection.onstream = function (event) {
                             "white";
                         getUnfocusList.style.backgroundColor = "white";
                     }, 500);
+
                 } else {
                     // unfocus dropdown'da parantezler için toplam sayıyı gösterebilmek için
                     var unFocusedListCount = 0;
@@ -413,6 +470,9 @@ connection.onstream = function (event) {
                 ("0" + dt.getSeconds()).slice(-2);
 
             alertLeave(event.extra.name, time);
+
+            // Log Kaydı
+            document.getElementById("log-message-group").innerHTML += "(" + time + ") " + event.extra.name + " <span style = 'color: brown;' > leaved </span> <br />";
         };
 
         // odaya giren olursa proctor'a verilen alert'te isim ve saatini yazdırmak için
@@ -425,6 +485,9 @@ connection.onstream = function (event) {
             ("0" + dt.getSeconds()).slice(-2);
 
         alertEntering(streamerName, time);
+
+        // Log Kaydı
+        document.getElementById("log-message-group").innerHTML += "(" + time + ") " + streamerName + " <span style = 'color: green;' > entering </span> <br />";
     }
 };
 
@@ -525,7 +588,9 @@ function sendMessage(e) {
         }
 
 // bağlantıda gönderilmiş mesaj varsa
-connection.onmessage = appendMsg;
+connection.onmessage = appendMsg
+
+connection.filesContainer = document.getElementById('image-message-group');
 
 // bağlantı kesilirse gerekli elementleri silmek için
 connection.onstreamended = function (event) {

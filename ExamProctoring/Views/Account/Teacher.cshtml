@@ -22,10 +22,38 @@
                 <!-- kişiler -->
             </div>
             <div class="col-8">
-                <h3 class="text-center">Chat</h3>
+                <h3 class="text-center">
+                    <button id="images" class="textButton" onclick="image()">Images</button>
+                    /
+                    <button id="chat" class="textButton" onclick="chat()">Chat</button>
+                    /
+                    <button id="log" class="textButton" onclick="log()">Log</button>
+                </h3>
                 <hr />
+
                 <div class="scrollbar-deep-purple bordered-deep-purple thin"
-                     style="overflow-y: scroll; height: 80vh"
+                     style="overflow-y: scroll; height: 90vh; visibility:hidden; display:none"
+                     id="imageContainer">
+                    <div class="container">
+                        <div class="chat-group" id="image-message-group">
+                            <!-- Images -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scrollbar-deep-purple bordered-deep-purple thin"
+                     style="overflow-y: scroll; height: 90vh; visibility: hidden; display: none"
+                     id="logContainer">
+                    <div class="container">
+                        <div class="chat-group" id="log-message-group">
+                            <!-- LOG -->
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="scrollbar-deep-purple bordered-deep-purple thin"
+                     style="overflow-y: scroll; height: 80vh; visibility: hidden; display: none"
                      id="messagesContainer">
                     <div class="container">
                         <div class="chat-group" id="chat-message-group">
@@ -33,7 +61,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="input-group" class="input-group mt-2">
+                <div id="input-group" class="input-group mt-2" style="visibility: hidden;">
                     <textarea id="textareaMessage"
                               class="form-control h-auto pb-1"
                               rows="2"
@@ -47,6 +75,8 @@
                         </button>
                     </span>
                 </div>
+
+
             </div>
         </div>
         <div class="col-7">
@@ -95,8 +125,8 @@
             </div>
             <div id="divRoom">
                 <span>
-                    <textarea id="roomID" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room Name" autofocus tabindex="1"></textarea>
-                    <textarea id="roomPassword" cols="20" rows="1" style="overflow:hidden; resize:none" placeholder="Room Password" tabindex="2"></textarea>
+                    <textarea id="roomID" cols="20" rows="1" style="overflow: hidden; resize: none;" oninput="this.value = this.value.toLowerCase()" placeholder="Room Name" autofocus tabindex="1" ></textarea>
+                    <textarea id="roomPassword" cols="20" rows="1" style="overflow:hidden; resize:none;" placeholder="Room Password" tabindex="2"></textarea>
                     <button id="btnRoom" class="btn btn-sm" onclick="openRoom();" tabindex="3">Open and Join Room</button>
                     <button id="btnClose" onclick="closeRoom();"><i class="far fa-times-circle fa-2x"></i></button>
                 </span>

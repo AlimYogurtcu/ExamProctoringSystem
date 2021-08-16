@@ -540,3 +540,24 @@ video::-webkit-media-controls-play-button {
 #clearAllAlert:hover .tooltipClearAllAlert {
     visibility: visible;
 }
+
+.textButton {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+#mainScreen {
+    position: relative;
+    z-index: 999;
+}
+
+#registerModal {
+    display: none;
+}
+
+.remoteContainer a:visited {
+    background-color: green;
+}

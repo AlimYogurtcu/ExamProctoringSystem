@@ -24,7 +24,7 @@
         `-alert" class="btn clear" href="#` +
         name +
         `-stream"> Go </a >`,
-        "Unfocused Detect"
+        "Unfocus Detect"
     );
 }
 

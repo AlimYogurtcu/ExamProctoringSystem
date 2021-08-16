@@ -11,6 +11,7 @@ $("#signinModal").modal({
     keyboard: false,
 });
 
+
 //Textarea'da Shift+Enter yeni satır oluşturması, sadece Enter'a basılırsa mesaj gönderilsin diye
 $("#roomID").keydown(function (e) {
     if (e.keyCode == 13 && !e.shiftKey) {
@@ -60,6 +61,55 @@ function clearAllAlert() {
     }, 250);
     document.getElementById("toast-container").remove();
 }
+
+function image() {
+    document.getElementById("images").style.textDecoration = "underline";
+    document.getElementById("chat").style.textDecoration = "unset";
+    document.getElementById("log").style.textDecoration = "unset";
+
+    document.getElementById("imageContainer").style.visibility = "visible";
+    document.getElementById("messagesContainer").style.visibility = "hidden";
+    document.getElementById("logContainer").style.visibility = "hidden";
+    document.getElementById("input-group").style.visibility = "hidden";
+
+    document.getElementById("imageContainer").style.display = "block";
+    document.getElementById("messagesContainer").style.display = "none";
+    document.getElementById("logContainer").style.display = "none";
+    document.getElementById("input-group").style.display = "none";
+}
+
+function chat() {
+    document.getElementById("chat").style.textDecoration = "underline";
+    document.getElementById("images").style.textDecoration = "unset";
+    document.getElementById("log").style.textDecoration = "unset";
+
+    document.getElementById("imageContainer").style.visibility = "hidden";
+    document.getElementById("messagesContainer").style.visibility = "visible";
+    document.getElementById("logContainer").style.visibility = "hidden";
+    document.getElementById("input-group").style.visibility = "visible";
+
+    document.getElementById("imageContainer").style.display = "none";
+    document.getElementById("messagesContainer").style.display = "block";
+    document.getElementById("logContainer").style.display = "none";
+    document.getElementById("input-group").style.display = "flex";
+}
+
+function log() {
+    document.getElementById("log").style.textDecoration = "underline";
+    document.getElementById("chat").style.textDecoration = "unset";
+    document.getElementById("images").style.textDecoration = "unset";
+
+    document.getElementById("imageContainer").style.visibility = "hidden";
+    document.getElementById("messagesContainer").style.visibility = "hidden";
+    document.getElementById("logContainer").style.visibility = "visible";
+    document.getElementById("input-group").style.display = "none";
+
+    document.getElementById("imageContainer").style.display = "none";
+    document.getElementById("messagesContainer").style.display = "none";
+    document.getElementById("logContainer").style.display = "block";
+    document.getElementById("input-group").style.visibility = "hidden";
+}
+
 
 
        function fullscreen() {

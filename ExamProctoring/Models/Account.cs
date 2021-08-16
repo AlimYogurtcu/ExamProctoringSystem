@@ -12,6 +12,7 @@ namespace ExamProctoring.Models
         public string account_username { get; set; }
         public string account_password { get; set; }
         public string account_role { get; set; }
+        public string account_photo { get; set; }
     }
 
 

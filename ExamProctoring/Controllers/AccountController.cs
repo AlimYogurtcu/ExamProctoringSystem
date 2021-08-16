@@ -12,6 +12,13 @@ namespace ExamProctoring.Controllers
             return View();
         }
 
+        public ActionResult AdminPage()
+        {
+
+            AccountContext accountContext = new AccountContext();
+            return View(accountContext.Accounts.ToList());
+        }
+
         [HttpPost]
         public String FormValuesTest(FormCollection formCollection)//action to test formcollection values
         {
@@ -58,5 +65,6 @@ namespace ExamProctoring.Controllers
                 return View("Login");
             }
         }
+
     }
 }
