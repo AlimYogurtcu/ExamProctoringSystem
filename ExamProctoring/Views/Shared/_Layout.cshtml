@@ -1,4 +1,4 @@
-﻿﻿
+
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
@@ -44,23 +44,6 @@
     <script src="~/Scripts/FileBufferReader.js"></script>
     <script>
 
-
-        //function registerModalShow() {
-        //    document.getElementById("signinModal").style.display = "none";
-        //    document.getElementById("signinModal").setAttribute("class", "");
-
-        //    document.getElementById("registerModal").style.display = "block";
-        //    document.getElementById("registerModal").setAttribute("class", "modal fade show");
-        //}
-
-        //function signinModalShow() {
-        //    document.getElementById("registerModal").style.display = "none";
-        //    document.getElementById("registerModal").setAttribute("class", "");
-
-        //    document.getElementById("signinModal").style.display = "block";
-        //    document.getElementById("signinModal").setAttribute("class", "modal fade show");
-        //}
-
 var connection = new RTCMultiConnection();
 
 // oda sahibi odadan çıkarsa oda kapansın diye
@@ -78,13 +61,6 @@ connection.session = {
 
 connection.maxParticipantsAllowed = 100; // odada olabilecek maksimum öğrenci sayısı
 
-//function closeEntering() {
-//  connection.maxParticipantsAllowed =
-//    connection.getAllParticipants().length;
-//  console.log(connection.maxParticipantsAllowed);
-//  alertClosingEnter();
-//} // odaya girebilecek maksimum öğrenci sayısını o an ki sayıya eşitlemek için (girişi kapatmak)
-
 connection.extra = {
     name: `@ViewBag.Name`,
     username: `@ViewBag.Username`,
@@ -94,43 +70,13 @@ connection.extra = {
     faceDetectBool: false
 };
 
+
 connection.sdpConstraints.mandatory = {
     OfferToReceiveAudio: true,
     OfferToReceiveVideo: true,
 };
 
-connection.enableLogs = true;
-
-//connection.candidates = {
-//    turn: true, // relay:true or turn:true
-//    stun: true
-//};
-
-//connection.iceTransportPolicy = 'relay';
-
-// first step, ignore default STUN+TURN servers
-connection.iceServers = [];
-
-// second step, set STUN url
-connection.iceServers.push({
-    urls: 'stun.voxgratia.org'
-});
-
-// last step, set TURN url (recommended)
-connection.iceServers.push({
-    url: 'turn:192.158.29.39:3478?transport=tcp',
-    credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-    username: '28224511:1379330808'
-});
-
-//connection.onRoomFull = function (roomid) { // oda full ise yapılacaklar (çalışmıyor)
-//  connection.closeSocket();
-//  connection.attachStreams.forEach(function (stream) {
-//    stream.stop();
-//  });
-
-//  alertEnteringClose();
-//};
+connection.enableLogs = false;
 
 // toogle button'dan sonra console'da null hatası için
 connection.onmute = function(event) {
@@ -309,7 +255,7 @@ connection.onstream = function (event) {
         var aRemote = document.createElement("a");
         aRemote.setAttribute("id", "streamerName");
         aRemote.setAttribute("href", "../uploads/" + streamerUsername + ".jpeg");
-        aRemote.setAttribute("onclick", "window.open('../uploads/" + streamerUsername + ".jpeg','newwindow', 'width=600,height=500'); return false;");
+        aRemote.setAttribute("onclick", "window.open('../uploads/" + streamerUsername + ".jpeg','newwindow', 'width=300,height=250'); return false;");
 
         var proctorScreen = document.getElementById("proctorScreen");
 
@@ -651,6 +597,34 @@ function leaveRoom() {
 }
 // proctor odayı açabilmesi için
 function openRoom() {
+
+	connection.DetectRTC.load(function() {
+    if (connection.DetectRTC.hasMicrophone === false) {
+		alertError("Microphone not found", "Device has not found");
+		connection.mediaConstraints.audio = false;
+		connection.session.audio = false;	
+    }
+
+    if (connection.DetectRTC.hasWebcam === false) {
+		alertError("Webcam not found", "Device has not found");
+		connection.mediaConstraints.video = false;
+		connection.session.video = false;
+    }
+
+    if (connection.DetectRTC.hasMicrophone === false &&
+        connection.DetectRTC.hasWebcam === false) {
+        alertError("Microphone and webcam not found", "Device has not found");
+		connection.dontCaptureUserMedia = true;
+    }
+
+    if (connection.DetectRTC.hasSpeakers === false) {
+		alertError("Please attach a speaker device. You will unable to hear the incoming audios.", "Device has not found");
+    }
+	
+	if (connection.DetectRTC.isWebRTCSupported === false) {
+		alertError("Please try a WebRTC compatible web browser e.g. Chrome, Firefox or Opera.", "WebRTC does not supported");
+	}
+
     var roomName = document.getElementById("roomID").value;
     // şifrenin yazılıp yazılmadığını kontrol etmek için
     var password = document.getElementById("roomPassword").value;
@@ -766,12 +740,37 @@ function openRoom() {
         document.getElementById("nameRoom").textContent = roomName;
         // oda bilgilerini kopyalayabilinmesi için görülemez bir p elementine oda ismini ve şifresini yazdırmak için
         document.getElementById("roomDetails").textContent =
-            "Room Name: " + roomName + "\n" + "Room Password: " + password;}
+            "Room Name: " + roomName + "\n" + "Room Password: " + password;}		
     });
+	
+	});
 }
 
 // öğrenci odaya girebilmesi için
 function joinRoom(event) {
+
+	connection.DetectRTC.load(function() {
+    if (connection.DetectRTC.hasMicrophone === false) {
+		alertError("Microphone not found", "Device has not found");
+    }
+
+    if (connection.DetectRTC.hasWebcam === false) {
+		alertError("Webcam not found", "Device has not found");
+    }
+
+    if (connection.DetectRTC.hasMicrophone === false &&
+        connection.DetectRTC.hasWebcam === false) {
+        alertError("Microphone and webcam not found", "Device has not found");
+    }
+
+    if (connection.DetectRTC.hasSpeakers === false) {
+		alertError("Please attach a speaker device. You will unable to hear the incoming audios.", "Device has not found");
+    }
+	
+	if (connection.DetectRTC.isWebRTCSupported === false) {
+		alertError("Please try a WebRTC compatible web browser e.g. Chrome, Firefox or Opera.", "WebRTC does not supported");
+	}
+
     var roomName = document.getElementById("roomID").value;
     // şifrenin yazılıp yazılmadığını kontrol etmek için
     var password = document.getElementById("roomPassword").value;
@@ -897,6 +896,9 @@ function joinRoom(event) {
 
                                 return;
                             }
+							else if (isRoomExist === true) {
+							connection.rejoin(roomName);
+							}
 
                             setTimeout(checkRoom, 1000); // 1 saniyede bir kontrol ediyor odanın hala açık olup olmamasını
                         }
@@ -907,6 +909,7 @@ function joinRoom(event) {
                 //alertEnteringClose(); // oda full veya giriş kapalıysa girişin kapalı olduğu alertini versin diye
                     }
     });
+	});
         }
 
         function fullscreen() {

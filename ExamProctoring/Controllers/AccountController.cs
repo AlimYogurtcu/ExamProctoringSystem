@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using ExamProctoring.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ExamProctoring.Controllers
 {
@@ -10,13 +11,6 @@ namespace ExamProctoring.Controllers
         public ActionResult Login()// action to return login view
         {
             return View();
-        }
-
-        public ActionResult AdminPage()
-        {
-
-            AccountContext accountContext = new AccountContext();
-            return View(accountContext.Accounts.ToList());
         }
 
         [HttpPost]
@@ -39,24 +33,39 @@ namespace ExamProctoring.Controllers
             Session.RemoveAll();
             try
             {// to check if the account exist or not
+             // DATABASE BAĞLANTISI
+             //Account account = accountContext.Accounts.Single(acc => acc.account_username.ToString() == accountUsernameFromForm && acc.account_password.ToString() == accountPasswordFromForm);
+             //Session["username"] = accountUsernameFromForm;
+             //Session["name"] = account.account_name.ToString();
+             //ViewBag.Name = account.account_name.ToString();
+             //ViewBag.Username = account.account_username.ToString();
+             //String accountRole = account.account_role.ToString();
 
-                Account account = accountContext.Accounts.Single(acc => acc.account_username.ToString() == accountUsernameFromForm && acc.account_password.ToString() == accountPasswordFromForm);
-                Session["username"] = accountUsernameFromForm;
-                Session["name"] = account.account_name.ToString();
-                ViewBag.Name = account.account_name.ToString();
-                ViewBag.Username = account.account_username.ToString();
-                String accountRole = account.account_role.ToString();
+                //if (accountRole == "Student")
+                //{
+                //    return View();
+                //}
+                //if (accountRole == "Teacher")
+                //{
+                //    return View("Teacher");
+                //}
 
-                if (accountRole == "Student")
+                //return View("Login");
+
+                ViewBag.Name = accountUsernameFromForm;
+                ViewBag.Username = accountUsernameFromForm;
+
+                if (accountUsernameFromForm == "student" && accountPasswordFromForm == "student")
                 {
                     return View();
                 }
-                if (accountRole == "Teacher")
+                if (accountUsernameFromForm == "proctor" && accountPasswordFromForm == "proctor")
                 {
                     return View("Teacher");
                 }
 
                 return View("Login");
+
 
             }
             catch//if account does not exist

@@ -1,4 +1,4 @@
-﻿@media screen and (min-width: 0px) and (max-width: 767px) {
+@media screen and (min-width: 0px) and (max-width: 767px) {
     html {
         font-size: 12px;
     }
@@ -12,6 +12,12 @@
     #input-group {
         height: 8vh;
     }
+	
+	#divRoom {
+		position:absolute; 
+		top:10px;
+		left:20px;
+	}
 
     #tools {
         margin-top: 15px;
@@ -38,6 +44,12 @@
     body {
         width: 100%;
     }
+	
+	#divRoom {
+		position:absolute; 
+		top:10px;
+		left:25px;
+	}
 
     #input-group {
         height: 10vh;
@@ -67,6 +79,12 @@
     h3 {
         font-size: 19px;
     }
+	
+	#divRoom {
+		position:absolute; 
+		top:10px;
+		left:30px;
+	}
 
     #input-group {
         height: 10vh;
@@ -336,10 +354,17 @@ video::-webkit-media-controls-play-button {
 
 #roomID {
     height: 30px;
+	max-height:50px;
+}
+
+#roomPassword {
+    height: 30px;
+	max-height:50px;
 }
 
 #btnRoom {
     border-bottom: 1px solid green;
+	max-height:35px;
 }
 
 #btnLeave {

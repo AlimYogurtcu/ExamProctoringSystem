@@ -1,0 +1,6 @@
+C:\Users\alimy\Desktop\ExamProctoringSystem\WPF\obj\Debug\E-Proctoring APP.csproj.AssemblyReference.cache
+C:\Users\alimy\Desktop\ExamProctoringSystem\WPF\obj\Debug\MainWindow.g.cs
+C:\Users\alimy\Desktop\ExamProctoringSystem\WPF\obj\Debug\App.g.cs
+C:\Users\alimy\Desktop\ExamProctoringSystem\WPF\obj\Debug\E-Proctoring_Content.g.cs
+C:\Users\alimy\Desktop\ExamProctoringSystem\WPF\obj\Debug\E-Proctoring_MarkupCompile.cache
+C:\Users\alimy\Desktop\ExamProctoringSystem\WPF\obj\Debug\E-Proctoring_MarkupCompile.lref
